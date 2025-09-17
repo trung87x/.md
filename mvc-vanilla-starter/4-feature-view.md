@@ -1,221 +1,87 @@
-# 📚 Feature Documentation: View lifecycle & cleanup (FR-4)
+# Feature 4 · View Lifecycle – `init`/`dispose`, cleanup context
 
-## 1. SRS – Feature Requirement Specification
+> **Mục tiêu trọng tâm:** quản lý vòng đời view, đảm bảo resource (event listener, timer, fetch) được khởi tạo và dọn dẹp đúng thời điểm.
 
-### 1.1 Mục đích
-Chuẩn hoá **vòng đời View**: cách View khởi tạo UI từ `model`, đăng ký sự kiện/tài nguyên, và **dọn dẹp đầy đủ** (listeners/timers/fetch) khi điều hướng sang View khác, tránh rò rỉ bộ nhớ.
+## 1. Mục tiêu & Phạm vi
+- Chuẩn hóa interface view module: export `init(ctx)` và `dispose()` tùy chọn.
+- Cho phép view đăng ký cleanup qua `ctx.onCleanup(callback)`.
+- Áp dụng cho `Users` view, `UserDetail` view và widget con.
+- Không xử lý state management phức tạp (Redux, v.v.).
 
-### 1.2 Phạm vi
-- View là cặp file `src/views/<Name>.html` + `src/views/<Name>.js`.
-- Hàm bắt buộc: `init(host, model, ctx)`; hàm tùy chọn: `dispose(host)`.
-- Hỗ trợ **cleanup** qua `ctx.onCleanup(fn)` và/hoặc giá trị trả về của `init` (disposer).
-- Không sử dụng framework; dùng chuẩn DOM + AbortController.
+## 2. Thành phần chính
+| Thành phần | Vai trò | Điểm nổi bật |
+| --- | --- | --- |
+| `system.js` | Điều phối render, truyền context | Reset cleanup trước khi mount view mới. |
+| View module (`*.js`) | Định nghĩa `init`, `dispose` | Có thể trả handler để update DOM. |
+| View template (`*.html`) | HTML raw load qua `import.meta.glob` | Inject vào DOM root.
 
-### 1.3 Functional Requirements
-- **FR-4-1**: View dựng UI từ `model` trong `init(host, model, ctx)`.
-- **FR-4-2**: Mọi listener/timer/subscription của View phải được **đăng ký cleanup**.
-- **FR-4-3**: Khi route đổi, hệ thống gọi toàn bộ cleanup trước khi render View mới.
-- **FR-4-4**: `init` **có thể trả về** một hàm disposer để dọn dẹp bổ sung.
-- **FR-4-5**: Hỗ trợ huỷ request bất đồng bộ (fetch) bằng `AbortController` hoặc signal tương đương.
+## 3. Yêu cầu chức năng
+- **FR-1:** `system.render(result)` phải gọi `dispose` của view hiện tại trước khi mount view mới.
+- **FR-2:** Cung cấp `ctx.onCleanup(fn)` để view đăng ký dọn dẹp (event listener, interval, abort controller).
+- **FR-3:** Cho phép view trả về API tùy chọn (ví dụ `update(model)`) để system có thể gọi khi controller rerender cùng view.
+- **FR-4:** Bảo toàn scroll & focus mặc định, trừ khi view override.
 
-### 1.4 Non-functional
-- Dọn dẹp hoàn tất ≤ 50ms cho View thông thường.
-- Không để lại listener/timer “mồ côi” sau 100 lần điều hướng liên tiếp (stress test).
-
----
-
-## 2. Use Case / User Flow
-
-### UC-4-1: Gắn sự kiện và dọn dẹp khi rời View
-1. `Users` view đăng ký click handler và interval cập nhật.
-2. Điều hướng sang View khác → cleanup chạy, không còn handler/interval tồn tại.
-
-### UC-4-2: Hủy request đang chạy khi rời View
-1. `UserDetail` view gọi `fetch(...)` với `AbortController`.
-2. Điều hướng trước khi fetch hoàn tất → `abort()` được gọi, không ném lỗi chưa xử lý.
-
-### UC-4-3: Dọn dẹp widget con
-1. View mount một widget con (trả về hàm unmount).
-2. Điều hướng → hàm unmount chạy, giải phóng tài nguyên widget.
-
----
-
-## 3. SDD – Thiết kế
-
-### 3.1 Chuẩn hàm View
-```ts
-// src/views/<Name>.js
-export async function init(
-  host: HTMLElement,
-  model: Record<string, any>,
-  ctx: {
-    onCleanup(fn: () => (void|Promise<void>)): void;
-    navigate(path: string, opts?: { params?: Record<string,string>, query?: Record<string,string> }): void;
+## 4. Thiết kế giải pháp
+### 4.1 Context truyền vào view
+```js
+const ctx = {
+  appEl,
+  params,
+  query,
+  model,
+  navigate,
+  onCleanup(fn) {
+    cleanupStack.push(fn);
   }
-): Promise<void | (() => (void|Promise<void>))>;
-
-// (tùy chọn)
-export async function dispose(host: HTMLElement): Promise<void>;
+};
 ```
 
-### 3.2 Cơ chế cleanup trong system
-- `system.renderView()` tạo **danh sách cleanup**.
-- Mọi `ctx.onCleanup(fn)` sẽ được đẩy vào danh sách.
-- Nếu `init` trả về hàm, hàm đó cũng được thêm vào cuối danh sách.
-- Trước khi render View mới, system gọi lần lượt các cleanup theo thứ tự đăng ký.
+### 4.2 Chu trình render
+1. Khi controller trả `{ view, model }`, `system.js` load `view.html` và inject vào root.
+2. Gọi `viewModule.init(ctx)` nếu tồn tại, lưu kết quả làm `currentViewInstance`.
+3. Nếu view cũ tồn tại `dispose`, gọi tất cả cleanup callback + `dispose()` trước khi mount mới.
+4. Khi cùng view được render lại, nếu instance có `update(model, ctx)`, gọi thay vì re-init.
 
-> Cơ chế này đã có từ FR-1; FR-4 đặc tả **bắt buộc** các View phải đăng ký cleanup đúng chuẩn.
-
----
-
-## 4. Test Plan / Test Cases
-
-- **TC-4-1**: `Users` view gắn click handler; điều hướng 50 lần → **không tăng** số handler còn treo (kiểm tra bằng counter trong console).
-- **TC-4-2**: `Users` view tạo `setInterval`; điều hướng → interval bị clear.
-- **TC-4-3**: `UserDetail` view tạo `fetch` với `AbortController`; điều hướng trước khi hoàn tất → request bị abort, không có unhandled rejection.
-- **TC-4-4**: Widget con trả về `unmount`; điều hướng → `unmount` được gọi.
-- **TC-4-5**: `dispose(host)` (nếu có) được gọi sau khi cleanup từ `init`.
-
----
-
-## 5. Implementation / Source Code Overview
-
-### I-4-1. `system.renderView` (nhắc lại cơ chế cleanup)
+### 4.3 Ví dụ: `Users` view
 ```js
-// src/app/system.js (trích)
-export async function renderView(viewName, model, appEl) {
-  if (current.dispose) { try { await current.dispose(); } catch {} }
-  appEl.textContent = "";
-
-  const htmlKey = `../views/${viewName}.html`;
-  const jsKey   = `../views/${viewName}.js`;
-  const loadHtml = viewHtmlMap[htmlKey];
-  const loadJs   = viewJsMap[jsKey];
-
-  if (!loadHtml || !loadJs) {
-    const nf = viewHtmlMap["../views/NotFound.html"];
-    const html = nf ? (await nf()).default : "<h1>Not Found</h1>";
-    appEl.appendChild(toFragment(html));
-    return;
+export function init(ctx) {
+  const searchForm = ctx.appEl.querySelector("form[data-role='search']");
+  function onSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(searchForm);
+    ctx.navigate("users", {}, { q: formData.get("q") });
   }
-
-  const [htmlMod, mod] = await Promise.all([loadHtml(), loadJs()]);
-  appEl.appendChild(toFragment(htmlMod.default));
-
-  const cleanups = [];
-  const ctx = {
-    navigate(path, { params = {}, query = {} } = {}) {
-      let out = path;
-      Object.entries(params).forEach(([k,v]) => { out = out.replace(`:${k}`, encodeURIComponent(v)); });
-      location.hash = buildHash(out, {}, query);
-    },
-    onCleanup(fn) { if (typeof fn === "function") cleanups.push(fn); },
-  };
-
-  const disposer = await mod.init?.(appEl, model, ctx);
-  current.dispose = async () => {
-    for (const fn of cleanups.splice(0)) { try { await fn(); } catch {} }
-    if (typeof disposer === "function") await disposer();
-    if (typeof mod.dispose === "function") await mod.dispose(appEl);
-  };
+  searchForm.addEventListener("submit", onSubmit);
+  ctx.onCleanup(() => searchForm.removeEventListener("submit", onSubmit));
 }
 ```
 
-### I-4-2. `Users` view: events + interval + cleanup
-`src/views/Users.html`
-```html
-<section>
-  <h1 id="title"></h1>
-  <button id="refresh">Refresh</button>
-  <ul id="userList"></ul>
-  <p>Tick: <span id="tick">0</span></p>
-</section>
-```
-
-`src/views/Users.js`
+### 4.4 Ví dụ: Widget con với cleanup
 ```js
-export async function init(host, model, ctx) {
-  host.querySelector("#title").textContent = model.title;
-
-  // 1) Click handler
-  const btn = host.querySelector("#refresh");
-  const onClick = () => console.log("[Users] refresh clicked");
-  btn.addEventListener("click", onClick);
-  ctx.onCleanup(() => btn.removeEventListener("click", onClick));
-
-  // 2) Interval
-  const tickEl = host.querySelector("#tick");
-  let tick = 0;
-  const id = setInterval(() => { tickEl.textContent = String(++tick); }, 1000);
-  ctx.onCleanup(() => clearInterval(id));
-
-  // 3) Render list (giữ đơn giản)
-  const list = model.userIds || ["u123", "u456", "u789"];
-  host.querySelector("#userList").innerHTML = list
-    .map(id => `<li><a href="#/users/${id}">User ${id}</a></li>`)
-    .join("");
+export function init(ctx) {
+  const timerId = setInterval(() => {
+    // update UI
+  }, 1000);
+  ctx.onCleanup(() => clearInterval(timerId));
 }
 ```
 
-### I-4-3. `UserDetail` view: fetch + AbortController + cleanup
-`src/views/UserDetail.html`
-```html
-<section>
-  <h1 id="title"></h1>
-  <p>ID: <code id="userId"></code></p>
-  <pre id="data"></pre>
-</section>
-```
+## 5. Use Case chính
+- **UC-1:** Người dùng điều hướng từ Users sang UserDetail → cleanup form listener.
+- **UC-2:** View thiết lập interval → khi rời trang, interval được clear.
+- **UC-3:** Controller rerender cùng view (ví dụ cập nhật filter) → gọi `update` thay vì re-init toàn bộ DOM.
 
-`src/views/UserDetail.js`
-```js
-export async function init(host, model, ctx) {
-  host.querySelector("#title").textContent = model.title;
-  host.querySelector("#userId").textContent = model.userId;
+## 6. Kế hoạch kiểm thử
+| ID | Mục tiêu | Cách kiểm | Kết quả |
+| --- | --- | --- | --- |
+| TC-1 | Cleanup listener | Điều hướng Users ↔ Home nhiều lần | Không xuất hiện listener trùng lặp (quan sát console). |
+| TC-2 | Cleanup timer | Gắn interval trong view, điều hướng đi | `clearInterval` được gọi (dùng spy). |
+| TC-3 | Update hook | Gọi rerender cùng view | Hàm `update` chạy, DOM cập nhật mà không re-init. |
+| TC-4 | Dispose manual | View cung cấp `dispose` | Hàm được gọi trước khi mount view mới. |
 
-  const ac = new AbortController();
-  const dataEl = host.querySelector("#data");
+## 7. Ghi chú triển khai
+- Tạo helper `createCleanup()` trong `system.js` để gom các callback.
+- Luôn reset `cleanupStack` khi render view mới để tránh memory leak.
+- Khi view fetch dữ liệu, nên sử dụng `AbortController` và đăng ký abort trong cleanup.
+- Đảm bảo template HTML không chứa script inline để tránh lỗi CSP.
 
-  // ví dụ fetch giả (có thể thay bằng real API)
-  const p = new Promise((res) => setTimeout(() => res({ score: 100, id: model.userId }), 1500));
-
-  let cancelled = false;
-  ctx.onCleanup(() => { ac.abort(); cancelled = true; });
-
-  try {
-    const data = await p; // await fetch(url, { signal: ac.signal }).then(r=>r.json())
-    if (!cancelled) dataEl.textContent = JSON.stringify(data, null, 2);
-  } catch (e) {
-    if (e.name !== "AbortError") console.error("[UserDetail] fetch error", e);
-  }
-}
-```
-
-### I-4-4. Widget con: mount/unmount
-`src/views/_widgets/Clock.js`
-```js
-export function mount(container) {
-  let id; const span = document.createElement("span");
-  container.appendChild(span);
-  const update = () => span.textContent = new Date().toLocaleTimeString();
-  update(); id = setInterval(update, 1000);
-  return () => { clearInterval(id); container.removeChild(span); };
-}
-```
-
-Sử dụng trong View:
-```js
-import { mount as mountClock } from "./_widgets/Clock.js";
-
-export async function init(host, model, ctx) {
-  const unmount = mountClock(host);
-  ctx.onCleanup(() => unmount());
-}
-```
-
----
-
-## 6. Change Log
-| Version | Nội dung |
-| --- | --- |
-| 1.0 | Đặc tả vòng đời View và cơ chế cleanup; ví dụ Users/UserDetail, widget con |

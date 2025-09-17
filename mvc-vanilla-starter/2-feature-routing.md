@@ -1,226 +1,80 @@
-# 📚 Feature Documentation: Routing with `:id` (FR-2)
+# Feature 2 · Routing – Hash router với tham số `:id`
 
-## 1. SRS – Feature Requirement Specification
+> **Mục tiêu trọng tâm:** xây dựng hash router hỗ trợ tham số động, fallback 404, điều hướng chương trình và đồng bộ query string.
 
-### 1.1 Mục đích
+## 1. Mục tiêu & Phạm vi
+- Điều hướng client-side dựa trên hash (`#/path`).
+- Hỗ trợ tham số động dạng `:id` và wildcard `*`.
+- Quản lý bảng route tách riêng (`route-table.js`) dễ bảo trì.
+- Phạm vi không bao gồm guard/auth (được xử lý ở Feature 8).
 
-Xác định cơ chế điều hướng theo **route pattern** (có tham số động `:id`) trong hệ thống SPA hash‑router. Hệ thống cần map chính xác `pattern → {controller, action}`, truyền tham số, và có fallback 404.
+## 2. Thành phần chính
+| Module | Vai trò | Ghi chú |
+| --- | --- | --- |
+| `router.js` | Lắng nghe thay đổi hash, match route, gọi controller | Cung cấp API `navigate(path, query)` để điều hướng.
+| `route-table.js` | Khai báo danh sách route | Cho phép import động để mở rộng.
+| `system.js` | Hỗ trợ chạy action & render view | Tái sử dụng từ Feature 1.
 
-### 1.2 Phạm vi
+## 3. Yêu cầu chức năng
+- **FR-1: Parse hash** – bóc tách `path` và `query` từ `location.hash`.
+- **FR-2: Match route động** – compile pattern chứa `:param`, trả `params` decode.
+- **FR-3: Fallback** – nếu không khớp, route tới NotFound.
+- **FR-4: Điều hướng chương trình** – expose `navigate({ name, params, query })`.
+- **FR-5: Đồng bộ lịch sử** – dùng `location.hash = ...` để push state, không reload trang.
+- **FR-6: Khởi động lại khi reload** – router đọc hash hiện tại khi load trang.
 
-- Hash routing (`#/path?query`) không reload trang.
-- Pattern động: `:id`.
-- Fallback `NotFound` khi không khớp route.
-
-### 1.3 Functional Requirements
-
-- **FR-2-1**: Khai báo bảng route chính thức và load khi khởi động.
-- **FR-2-2**: So khớp pattern, trích tham số động, truyền vào controller action.
-- **FR-2-3**: Không khớp → render `NotFound` với `path`.
-- **FR-2-4**: Cung cấp `navigate(path, { params, query })` dùng chung.
-
-### 1.4 Non-functional
-
-- Parse/match route ≤ 50ms.
-- Không rò rỉ state/listeners giữa 2 lần điều hướng.
-
----
-
-## 2. Use Case / User Flow
-
-### UC-2-1: Điều hướng tới Home
-
-Truy cập `#/` → render Home.
-
-### UC-2-2: Điều hướng tới danh sách người dùng
-
-Truy cập `#/users` → render Users.
-
-### UC-2-3: Điều hướng tới chi tiết người dùng
-
-Truy cập `#/users/u123`.
-
-- Router khớp `users/:id` → `{ id: "u123" }`.
-- Gọi `UsersController.detail({ id: "u123" })` → render `UserDetail`.
-
-### UC-2-4: Route không tồn tại
-
-Truy cập `#/khong-co` → render NotFound.
-
----
-
-## 3. SDD
-
-### 3.1 Bảng route (chính thức cho FR‑2)
-
+## 4. Thiết kế giải pháp
+### 4.1 Cấu trúc route-table
 ```js
-// src/app/router.js
-import { start } from "./system.js";
-import HomeController from "../controllers/HomeController.js";
-import UsersController from "../controllers/UsersController.js";
-
-export function startRouter(appEl) {
-  const routes = [
-    { pattern: "", ctrl: HomeController, action: "index" },
-    { pattern: "users", ctrl: UsersController, action: "index" },
-    { pattern: "users/:id", ctrl: UsersController, action: "detail" },
-  ];
-
-  start(appEl, routes);
-}
+// route-table.js
+export const routes = [
+  { name: "home", pattern: "", controller: HomeController, action: "index" },
+  { name: "users", pattern: "users", controller: UsersController, action: "index" },
+  { name: "user-detail", pattern: "users/:id", controller: UserDetailController, action: "show" },
+  { name: "not-found", pattern: "*", controller: NotFoundController, action: "index" }
+];
 ```
 
-### 3.2 Luồng điều hướng
+### 4.2 Thuật toán match
+1. Chuẩn hóa pattern (bỏ `/` đầu/cuối).
+2. Thay `:param` bằng regex `([^/]+)` và lưu danh sách key.
+3. So khớp với path, nếu match xây dựng `params` qua `decodeURIComponent`.
+4. Nếu pattern là `*`, match mọi path và bỏ qua params.
 
-1. Lắng nghe `hashchange`.
-2. `parseHash()` lấy `rawPath`, `query`.
-3. Duyệt `routes`, `matchRoute(pattern, rawPath)` → `params`.
-4. `runAction(ctrl, action, params, query, ctx)` → `{ view, model }`.
-5. `renderView(view, model)`; dispose view cũ trước khi render.
-6. Không khớp route → `renderView("NotFound", { path: rawPath })`.
-
----
-
-## 4. Test Plan / Test Cases
-
-- **TC-2-1**: `#/` → Home.
-- **TC-2-2**: `#/users` → Users list.
-- **TC-2-3**: `#/users/u123` → `UsersController.detail({id:"u123"})` được gọi.
-- **TC-2-4**: `#/khong-co` → NotFound.
-- **TC-2-5**: Điều hướng nhanh 10 lần → không rò rỉ listeners.
-
----
-
-## 5. Implementation / Source Code Overview
-
-### I-2-1. Route table (cố định cho FR‑2)
-
+### 4.3 Điều hướng chương trình
 ```js
-// src/app/router.js
-import { start } from "./system.js";
-import HomeController from "../controllers/HomeController.js";
-import UsersController from "../controllers/UsersController.js";
-
-export function startRouter(appEl) {
-  const routes = [
-    { pattern: "", ctrl: HomeController, action: "index" },
-    { pattern: "users", ctrl: UsersController, action: "index" },
-    { pattern: "users/:id", ctrl: UsersController, action: "detail" },
-  ];
-  start(appEl, routes);
-}
-```
-
-### I-2-2. So khớp pattern và trích tham số
-
-```js
-// src/app/system.js (trích — đã có từ FR‑1)
-function compile(pattern) {
-  const keys = [];
-  const rx = (pattern || "")
-    .replace(/(^\/+|\/+$$)/g, "")
-    .replace(/:([A-Za-z0-9_]+)/g, (_, k) => {
-      keys.push(k);
-      return "([^/]+)";
-    });
-  return { regex: new RegExp(`^${rx}$`), keys };
-}
-function matchRoute(pattern, path) {
-  const { regex, keys } = compile(pattern);
-  const m = (path || "").match(regex);
-  if (!m) return null;
-  const params = {};
-  keys.forEach((k, i) => (params[k] = decodeURIComponent(m[i + 1])));
-  return params;
-}
-```
-
-### I-2-3. Controller định nghĩa
-
-```js
-// src/controllers/UsersController.js
-import { BaseController } from "../app/base-controller.js";
-
-export default class UsersController extends BaseController {
-  async index() {
-    return this.view("Users", { title: "Danh sách người dùng" });
-  }
-  async detail(params) {
-    return this.view("UserDetail", {
-      title: "Chi tiết người dùng",
-      userId: params.id,
-    });
+export function navigate(name, params = {}, query = {}) {
+  const route = routes.find((r) => r.name === name);
+  if (!route) throw new Error(`Unknown route ${name}`);
+  const path = buildPath(route.pattern, params);
+  const hash = buildHash(path, query);
+  if (location.hash === hash) {
+    // hashchange không bắn nếu giống nhau ⇒ manually trigger
+    handleHashChange();
+  } else {
+    location.hash = hash;
   }
 }
 ```
 
-### I-2-4. Views định nghĩa
+## 5. Use Case chính
+- **UC-1: Người dùng click menu** – router cập nhật hash, render view tương ứng.
+- **UC-2: Copy đường dẫn** – dán lại URL có hash, trang phải render đúng.
+- **UC-3: Điều hướng từ code** – Controller gọi `navigate("user-detail", { id })` và giữ nguyên query.
 
-`src/views/Users.html`
+## 6. Kế hoạch kiểm thử
+| ID | Kịch bản | Các bước | Kết quả |
+| --- | --- | --- | --- |
+| TC-1 | Điều hướng home | Hash `#/` | Home render. |
+| TC-2 | Điều hướng users | Hash `#/users` | Users render. |
+| TC-3 | Dynamic params | Hash `#/users/42` | Controller nhận `params.id === "42"`. |
+| TC-4 | Query string | Hash `#/users?q=foo&page=2` | Controller nhận `query` tương ứng. |
+| TC-5 | Fallback | Hash `#/unknown` | NotFound render. |
+| TC-6 | Điều hướng chương trình | Gọi `navigate("users", {}, { page: 3 })` | Hash cập nhật và view render lại. |
 
-```html
-<section>
-  <h1 id="title"></h1>
-  <ul id="userList"></ul>
-</section>
-```
+## 7. Ghi chú triển khai
+- Dùng `window.addEventListener("hashchange", handler)` và `load` để xử lý reload.
+- Giữ router thuần, không gắn trực tiếp DOM; controller chịu trách nhiệm binding view.
+- Cân nhắc debounce hashchange nếu view nặng.
+- Cho phép mở rộng route-table bằng cách merge dynamic modules khi build.
 
-`src/views/Users.js`
-
-```js
-export async function init(host, model) {
-  host.querySelector("#title").textContent = model.title;
-  // dữ liệu giả để test
-  const list = ["u123", "u456", "u789"];
-  host.querySelector("#userList").innerHTML = list
-    .map((id) => `<li><a href="#/users/${id}">User ${id}</a></li>`)
-    .join("");
-}
-```
-
-`src/views/UserDetail.html`
-
-```html
-<section>
-  <h1 id="title"></h1>
-  <p>ID: <code id="userId"></code></p>
-</section>
-```
-
-`src/views/UserDetail.js`
-
-```js
-export async function init(host, model) {
-  host.querySelector("#title").textContent = model.title;
-  host.querySelector("#userId").textContent = model.userId;
-}
-```
-
-### I-2-5. Helper điều hướng
-
-```js
-// src/app/system.js (trích — đã có từ FR‑1)
-function buildHash(path, _params = {}, query = {}) {
-  const qs = new URLSearchParams(query).toString();
-  return `#/${path}${qs ? `?${qs}` : ""}`;
-}
-const ctx = {
-  navigate(path, { params = {}, query = {} } = {}) {
-    let out = path;
-    Object.entries(params).forEach(([k, v]) => {
-      out = out.replace(`:${k}`, encodeURIComponent(v));
-    });
-    location.hash = buildHash(out, {}, query);
-  },
-};
-```
-
-> Ghi chú: `NotFound` đã tạo tại FR‑1; tái sử dụng ở FR‑2.
-
----
-
-## 6. Change Log
-
-| Version | Nội dung                                     |
-| ------- | -------------------------------------------- |
-| 1.0     | Routing với `:id` (Users/:id) + views đầy đủ |
