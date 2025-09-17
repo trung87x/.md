@@ -1,202 +1,101 @@
-# 📚 Feature Documentation: Basic Auth & Guards (FR-8)
+# Feature 8 · Auth – Đăng nhập/guard route account
 
-## 1. SRS – Feature Requirement Specification
+> **Mục tiêu trọng tâm:** cung cấp cơ chế đăng nhập mock, giữ trạng thái phiên và bảo vệ route cần quyền truy cập (`account`).
 
-### 1.1 Mục đích
-Bổ sung **xác thực cơ bản (mock)** và **guards** để:
-- Chặn truy cập vào route yêu cầu đăng nhập.
-- Chuyển hướng đến trang đăng nhập kèm tham số `next`, và quay lại sau khi đăng nhập.
+## 1. Mục tiêu & Phạm vi
+- Tạo `AuthService` giả lập với login/logout, lưu token (localStorage/sessionStorage).
+- Implement guard `requireAuth` kiểm tra trạng thái trước khi vào route.
+- Cung cấp controller & view cho Login, Account, Logout.
+- Tương tác với entitlement (Feature 7) khi hiển thị quyền lợi người dùng.
 
-### 1.2 Phạm vi
-- Không tích hợp OAuth/real backend; **AuthService** mock + `localStorage`.
-- Route chính thức của FR‑8: `#/login`, `#/logout`, và **ít nhất một** route được gắn cờ `requireAuth: true` (ví dụ: `#/account`).
-- Cơ chế guard tích hợp vào `system.start(...)` thông qua tham số `guards`.
+## 2. Thành phần chính
+| Thành phần | Vai trò | Điểm nổi bật |
+| --- | --- | --- |
+| `AuthService` | Lưu và kiểm tra trạng thái đăng nhập | API: `login({ email, password })`, `logout()`, `getUser()`.
+| `requireAuth` | Guard cho router | Redirect về login nếu chưa đăng nhập, đính kèm query `next`.
+| `LoginController` | Xử lý form đăng nhập | Validate input, gọi service, redirect tới `next` hoặc `account`.
+| `AccountController` | Trang protected | Hiển thị thông tin user & entitlement hiện tại.
+| Views Login/Account | Giao diện người dùng | Form login, hiển thị trạng thái và nút logout.
 
-### 1.3 Functional Requirements
-- **FR-8-1**: `guards.ensureAuth()` trả `true/false` thể hiện trạng thái đăng nhập.
-- **FR-8-2**: Route có `requireAuth: true` → nếu chưa đăng nhập, redirect `#/login?next=<path>`.
-- **FR-8-3**: `Login` view cho phép “đăng nhập” (mock) và điều hướng về `next` (mặc định `/`).
-- **FR-8-4**: `Logout` xoá trạng thái đăng nhập và quay về `Home`.
-- **FR-8-5**: Guard **không** làm treo ứng dụng; có thể dùng cùng `beforeEach/beforeEnter`.
+## 3. Yêu cầu chức năng
+- **FR-1:** `AuthService.login` kiểm tra credential mock (ví dụ email `demo@mvc.dev`, pass `123456`).
+- **FR-2:** Sau login thành công, lưu token + user info vào storage và trả object `{ user }`.
+- **FR-3:** `logout` xóa storage và broadcast event `auth:changed` (tùy chọn).
+- **FR-4:** Guard `requireAuth(ctx, next)` kiểm tra `AuthService.isAuthenticated()`. Nếu false → redirect `#/login?next=...`.
+- **FR-5:** `LoginController` đọc query `next` để điều hướng sau thành công.
+- **FR-6:** `AccountController` hiển thị user info, entitlement (sử dụng `EntitlementService.getStatus()`).
+- **FR-7:** Hiển thị lỗi rõ ràng khi credential sai, không reveal thông tin nhạy cảm.
 
-### 1.4 Non-functional
-- Tác vụ đăng nhập/đăng xuất ≤ 10ms (cục bộ).
-- Không rò rỉ listeners giữa các lần mở trang `Login`.
-
----
-
-## 2. Use Case / User Flow
-
-### UC-8-1: Truy cập trang cần đăng nhập
-1. Người dùng mở `#/account` (được gắn `requireAuth: true`).
-2. Chưa đăng nhập → hệ thống redirect `#/login?next=/account`.
-
-### UC-8-2: Đăng nhập và quay lại
-1. Ở `#/login`, người dùng bấm “Đăng nhập” (mock).
-2. Hệ thống chuyển đến `next` (nếu có) hoặc `/`.
-
-### UC-8-3: Đăng xuất
-1. Người dùng mở `#/logout`.
-2. Trạng thái đăng nhập bị xoá, điều hướng về Home.
-
----
-
-## 3. SDD – Thiết kế
-
-### 3.1 Guards: hợp đồng & trình tự
-- `start(appEl, routes, guards)` trong `system.js` sẽ gọi theo thứ tự:
-  1) `guards.beforeEach?(ctx)` → có thể trả `false` để huỷ điều hướng.
-  2) Nếu route có `requireAuth`, chạy `guards.ensureAuth?({ ctx })`.
-     - `false` → `ctx.navigate("login", { query: { next: "/<rawPath>" } })` và **dừng**.
-  3) `route.beforeEnter?({ params, query, ctx })`.
-
-### 3.2 Route chính thức khi **bật FR‑8**
-- `login` → `AuthController.login`
-- `logout` → `AuthController.logout`
-- `account` (ví dụ route cần đăng nhập) → `AccountController.index` với `requireAuth: true`
-
-> Lưu ý: FR‑2 vẫn độc lập. Việc bổ sung route dưới đây chỉ áp dụng **khi kích hoạt FR‑8**.
-
----
-
-## 4. Test Plan / Test Cases
-
-- **TC-8-1**: Chưa login, truy cập `#/account` → redirect `#/login?next=/account`.
-- **TC-8-2**: Tại `#/login` bấm “Đăng nhập” → điều hướng về `/account`.
-- **TC-8-3**: Tại `#/logout` → quay về Home, `ensureAuth()` trả `false`.
-- **TC-8-4**: `beforeEach` trả `false` → huỷ điều hướng (tuỳ chọn).
-- **TC-8-5**: Điều hướng qua lại 20 lần giữa `login/account` → không rò rỉ listeners.
-
----
-
-## 5. Implementation / Source Code Overview
-
-### I-8-1. AuthService (mock)
-`src/services/AuthService.js`
+## 4. Thiết kế giải pháp
+### 4.1 `AuthService`
 ```js
-const KEY = "auth.loggedIn";
+const STORAGE_KEY = "mvc.auth";
 
-export default {
-  isLoggedIn() {
-    try { return localStorage.getItem(KEY) === "1"; }
-    catch { return false; }
-  },
-  async login() {
-    try { localStorage.setItem(KEY, "1"); } catch {}
-    return true;
-  },
-  async logout() {
-    try { localStorage.removeItem(KEY); } catch {}
-    return true;
+export class AuthService {
+  login({ email, password }) {
+    if (email === "demo@mvc.dev" && password === "123456") {
+      const session = {
+        token: crypto.randomUUID(),
+        user: { id: 1, name: "Demo User", email }
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+      return session;
+    }
+    throw new Error("Email hoặc mật khẩu không đúng");
   }
-};
-```
 
-### I-8-2. AuthController
-`src/controllers/AuthController.js`
-```js
-import { BaseController } from "../app/base-controller.js";
-import Auth from "../services/AuthService.js";
-
-export default class AuthController extends BaseController {
-  async login(_params, query) {
-    const next = query?.next || "/";
-    return this.view("Login", { next });
+  logout() {
+    localStorage.removeItem(STORAGE_KEY);
   }
-  async logout() {
-    await Auth.logout();
-    return this.view("Home", { title: "Home" });
+
+  getSession() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  isAuthenticated() {
+    return !!this.getSession();
   }
 }
 ```
 
-### I-8-3. AccountController (route cần đăng nhập)
-`src/controllers/AccountController.js`
+### 4.2 Guard `requireAuth`
 ```js
-import { BaseController } from "../app/base-controller.js";
-
-export default class AccountController extends BaseController {
-  async index() {
-    return this.view("Account", { title: "Tài khoản của tôi" });
+export function requireAuth(ctx, next) {
+  if (authService.isAuthenticated()) {
+    return next();
   }
+  const nextUrl = ctx.to?.hash ?? ctx.hash;
+  ctx.navigate("login", {}, { next: nextUrl });
+  return { stop: true };
 }
 ```
 
-### I-8-4. Views
-`src/views/Login.html`
-```html
-<section>
-  <h1>Đăng nhập</h1>
-  <p>Sử dụng nút dưới đây để đăng nhập (mock).</p>
-  <button id="login">Đăng nhập</button>
-</section>
-```
+### 4.3 Controllers & Views
+- **LoginController**: render form; submit gọi `authService.login`, on success → `ctx.navigate(nextRoute)`.
+- **AccountController**: lấy session + entitlement, render view hiển thị thông tin user, trạng thái PRO/free và nút logout.
+- **LogoutController** (tùy chọn): gọi `logout`, redirect Home.
+- **Login view**: form với email/password, hiển thị error message.
+- **Account view**: trình bày thông tin user, entitlement, CTA upgrade (link tới Feature 7).
 
-`src/views/Login.js`
-```js
-import Auth from "../services/AuthService.js";
+## 5. Use Case chính
+- **UC-1:** Người dùng truy cập `#/account` khi chưa login → redirect tới login với `next=%23%2Faccount`.
+- **UC-2:** Đăng nhập thành công → chuyển tới trang đích (account hoặc route khác từ `next`).
+- **UC-3:** Đăng xuất → session bị xóa, chuyển về Home.
+- **UC-4:** Refresh trang account khi đã đăng nhập → dữ liệu lấy từ storage, vẫn trong phiên.
 
-export async function init(host, model, ctx) {
-  const next = model?.next || "/";
-  const btn = host.querySelector("#login");
-  const onClick = async () => { await Auth.login(); ctx.navigate(next.replace(/^\//,"")); };
-  btn.addEventListener("click", onClick);
-  ctx.onCleanup(() => btn.removeEventListener("click", onClick));
-}
-```
+## 6. Kế hoạch kiểm thử
+| ID | Kịch bản | Các bước | Kết quả |
+| --- | --- | --- | --- |
+| TC-1 | Redirect guard | Truy cập `#/account` khi chưa login | Bị chuyển tới `#/login?next=%23%2Faccount`. |
+| TC-2 | Login thành công | Nhập credential hợp lệ | Điều hướng tới route trong `next`. |
+| TC-3 | Login sai | Nhập sai password | Hiển thị thông báo lỗi, không lưu session. |
+| TC-4 | Logout | Click logout từ account | Session bị xóa, quay về Home/login. |
+| TC-5 | Persist | Refresh sau khi login | Người dùng vẫn đăng nhập. |
 
-`src/views/Account.html`
-```html
-<section>
-  <h1 id="title"></h1>
-  <p>Chào mừng! Đây là trang tài khoản (chỉ truy cập khi đăng nhập).</p>
-</section>
-```
+## 7. Ghi chú triển khai
+- Đảm bảo `AuthService` dùng `try/catch` trong controller để hiển thị lỗi thân thiện.
+- Có thể thêm throttle để tránh brute force (dù mock).
+- Khi kết hợp với Feature 7, hiển thị entitlement trong Account để khuyến khích nâng cấp.
+- Nếu nâng cấp sang API thật, thay storage bằng HTTP cookie + JWT.
 
-`src/views/Account.js`
-```js
-export async function init(host, model) {
-  host.querySelector("#title").textContent = model.title;
-}
-```
-
-### I-8-5. Bổ sung routes & guards khi **bật FR‑8**
-`src/app/router.js`
-```js
-import { start } from "./system.js";
-import HomeController from "../controllers/HomeController.js";
-import UsersController from "../controllers/UsersController.js";
-import AuthController from "../controllers/AuthController.js";
-import AccountController from "../controllers/AccountController.js";
-import Auth from "../services/AuthService.js";
-
-export function startRouter(appEl) {
-  const routes = [
-    // --- routes lõi từ FR-2 ---
-    { pattern: "",          ctrl: HomeController,    action: "index" },
-    { pattern: "users",     ctrl: UsersController,   action: "index" },
-    { pattern: "users/:id", ctrl: UsersController,   action: "detail" },
-
-    // --- FR-8: Auth ---
-    { pattern: "login",     ctrl: AuthController,    action: "login" },
-    { pattern: "logout",    ctrl: AuthController,    action: "logout" },
-    { pattern: "account",   ctrl: AccountController, action: "index", requireAuth: true },
-  ];
-
-  const guards = {
-    async beforeEach() { return true; },
-    async ensureAuth() { return Auth.isLoggedIn(); },
-  };
-
-  start(appEl, routes, guards);
-}
-```
-
-> Khi **chưa bật FR‑8**, đừng import các controller/services/Auth vào `router.js`. Khi bật FR‑8, bạn thêm block “Auth” như trên.
-
----
-
-## 6. Change Log
-| Version | Nội dung |
-| --- | --- |
-| 1.0 | Auth mock + guards; routes login/logout/account; redirect với `next` |
