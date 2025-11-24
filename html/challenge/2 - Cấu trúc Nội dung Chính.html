@@ -1,0 +1,63 @@
+<main>
+  <article>
+    <h1>Kỹ Thuật Tối Ưu Hóa Hiệu Suất Tải Trang Web Ngữ Nghĩa</h1>
+    <p>
+      Đăng ngày: <time datetime="2025-11-24">24 tháng 11, 2025</time> | Tác giả:
+      Trí Tuệ Nhân Tạo
+    </p>
+    <p>
+      Trang chi tiết bài viết này được xây dựng dựa trên các tiêu chuẩn ngữ
+      nghĩa HTML5, đảm bảo cấu trúc rõ ràng cho công cụ tìm kiếm và trình đọc
+      màn hình. Chúng ta sẽ khám phá cách phân cấp nội dung một cách logic.
+    </p>
+    <h2>I. Tầm Quan Trọng của Cấu Trúc Ngữ Nghĩa</h2>
+    <p>
+      Sử dụng các thẻ như &lt;header&gt;, &lt;main&gt;, &lt;article&gt;, và
+      &lt;aside&gt; không chỉ giúp mã sạch hơn mà còn cung cấp ngữ cảnh cho
+      trình duyệt, giúp tăng cường SEO và khả năng truy cập (Accessibility).
+    </p>
+    <h3>1.1. Phân cấp Tiêu đề Đúng cách</h3>
+    <p>
+      Việc chỉ có một thẻ &lt;h1&gt; trên mỗi trang là một quy tắc quan trọng.
+      Các tiêu đề phụ phải theo thứ bậc từ &lt;h2&gt; đến &lt;h6&gt; để thể hiện
+      mối quan hệ logic giữa các phần nội dung.
+    </p>
+    <h2>II. Nội Dung Chính và Nội Dung Liên Quan</h2>
+    <p>
+      Thẻ &lt;article&gt; định nghĩa một khối nội dung độc lập, hoàn chỉnh, như
+      một bài viết, một bài đăng trên diễn đàn, hoặc một mục tin tức. Điều này
+      khác với &lt;section&gt; chỉ định một phần chung chung của trang.
+    </p>
+
+    <h3>2.1. Sử dụng thẻ time cho Ngày tháng</h3>
+    <p>
+      Thẻ &lt;time&gt; với thuộc tính `datetime` cung cấp cho máy móc (công cụ
+      tìm kiếm, lịch) một định dạng chuẩn của ngày/giờ, ngay cả khi hiển thị cho
+      người dùng là một định dạng dễ đọc hơn (ví dụ: "Hôm qua").
+    </p>
+
+    <h2>III. Sự Khác Biệt Giữa Article và Section</h2>
+    <p>
+      Trong khi &lt;article&gt; là độc lập, &lt;section&gt; chỉ là một nhóm chủ
+      đề nội dung có liên quan. Trong &lt;aside&gt;, chúng ta sử dụng
+      &lt;section&gt; để nhóm các widget như "Bài viết liên quan".
+    </p>
+  </article>
+  <aside>
+    <h2>Sidebar</h2>
+    <section>
+      <h3>Bài Viết Liên Quan</h3>
+      <ul>
+        <li><a href="#">Phân tích SEO kỹ thuật HTML5</a></li>
+        <li><a href="#">Tối ưu hóa tốc độ tải với preload</a></li>
+        <li><a href="#">Các lỗi ngữ nghĩa thường gặp</a></li>
+      </ul>
+    </section>
+    <section>
+      <h3>Chủ Đề Phổ Biến</h3>
+      <p>
+        Nội dung sidebar thường là các liên kết điều hướng phụ hoặc quảng cáo.
+      </p>
+    </section>
+  </aside>
+</main>
