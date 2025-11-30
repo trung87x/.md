@@ -1,0 +1,1 @@
+Sở hữu: my, your, his, her (poss.), its, our, their, mine, yours, hers, ours, theirs

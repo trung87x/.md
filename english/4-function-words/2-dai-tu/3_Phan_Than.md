@@ -1,0 +1,1 @@
+Phản thân: myself, yourself, himself, herself, itself, ourselves, yourselves, themselves

@@ -1,0 +1,1 @@
+Toán học/Đo lường: average, maximum, minimum, total, height, width, length, depth, size, angle, edge, radius, diameter, perimeter, meter, centimeter, kilometer, gram, kilogram, liter, milliliter, inch, yard, mile, ounce, pound, Celsius, Fahrenheit

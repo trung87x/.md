@@ -1,0 +1,1 @@
+Vật phẩm nhỏ: bag, paper, pen, pencil, book, movie, picture, photo, art, letter, email, message, document, file, binder, notebook, glue, tape, card, cash, coin, plate, bowl, glass, mug, fork, spoon, knife, chopsticks, pan, pot, hanger, wallet, purse, backpack, handbag, sunglasses, rope, flag

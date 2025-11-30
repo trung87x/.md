@@ -1,0 +1,1 @@
+Địa lý: world, place, area, river, sea, ocean, lake, mountain, beach, forest, valley, hill, cave, waterfall, log, rock, tree, flower, grass, leaf, stone, sand, soil, port, harbor

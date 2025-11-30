@@ -1,0 +1,1 @@
+Chức vụ/Tổ chức: government, company, member, law, city, community, director, employee, employer, expert, leader, staff, organization, president, prime minister, parliament, congress, minister, mayor, constitution, jury, customs, neighbor, volunteer

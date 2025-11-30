@@ -1,0 +1,1 @@
+Cụm động từ (Phrasal Verbs): look for, look after, think about, depend on, belong to, believe in, pay for, wait for, care about, work on, lie down, try on, account for, add up, ask for, consist of, deal with, figure out, result in, speed up, turn down

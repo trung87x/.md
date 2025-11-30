@@ -1,0 +1,1 @@
+Số lượng/Thứ tự: number, zero, one...ten, eleven...twenty, thirty...ninety, hundred, thousand, million, billion, percent, first...tenth
