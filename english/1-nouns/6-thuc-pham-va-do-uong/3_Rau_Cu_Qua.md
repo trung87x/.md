@@ -1,1 +1,0 @@
-Rau củ quả: fruit, vegetable, carrot, tomato, cucumber, lettuce, spinach, broccoli, cauliflower, pumpkin, eggplant, zucchini, corn, peas, beans, banana, lemon, watermelon, grape, strawberry, blueberry, pear, peach, plum, cherry, pineapple, mango, papaya, coconut, avocado, kiwi, raspberry, blackberry, grapefruit, pomegranate

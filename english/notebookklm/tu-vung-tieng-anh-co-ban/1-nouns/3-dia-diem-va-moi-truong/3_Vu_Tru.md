@@ -1,0 +1,1 @@
+Vũ trụ: planet, star, moon, galaxy, universe, comet, asteroid, satellite, orbit, spacecraft, astronaut, rocket

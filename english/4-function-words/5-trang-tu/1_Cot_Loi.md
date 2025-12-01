@@ -1,1 +1,0 @@
-Cốt lõi: very, really, just, even, also, well, often, usually, always, sometimes, never, ever, already, still, yet, tonight, soon, ago, together, apart, again, almost, nearly, quite, rather, instead, when, where, why, how, out, up, down, off, here, there

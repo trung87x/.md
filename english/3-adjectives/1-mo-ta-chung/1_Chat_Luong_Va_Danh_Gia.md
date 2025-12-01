@@ -1,1 +1,0 @@
-Chất lượng/Đánh giá: good, great, excellent, bad, awful, real, true, special, important, essential, necessary, proper, reliable, valuable, successful, perfect, original, unique, able, unable, general, basic, simple, clear, accurate, precise, technical, experimental, chemical, electronic, firm, flat, solid, wooden, mobile, electrical, confident, creative, brave, wise

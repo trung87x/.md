@@ -1,1 +1,0 @@
-Liên kết/Logic: therefore, moreover, furthermore, meanwhile, otherwise, thus, hence, whereas, whether, however, nevertheless

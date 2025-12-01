@@ -1,1 +1,0 @@
-Thời tiết: air, fire, rain, sun, snow, wind, cloud, drizzle, hail, humidity, forecast, storm, thunderstorm, tornado, typhoon, hurricane, rainbow, fog

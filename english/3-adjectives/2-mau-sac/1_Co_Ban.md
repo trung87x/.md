@@ -1,1 +1,0 @@
-Cơ bản: red, blue, green, yellow, black, white, brown, gray, pink, purple, orange

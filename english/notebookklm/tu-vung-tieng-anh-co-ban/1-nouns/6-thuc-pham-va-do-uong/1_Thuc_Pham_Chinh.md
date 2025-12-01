@@ -1,0 +1,1 @@
+Thực phẩm chính: rice, bread, noodles, pasta, cereal, oatmeal, porridge, egg, milk, sugar, salt, oil, butter, cheese

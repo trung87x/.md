@@ -1,0 +1,1 @@
+Cảm xúc/Trạng thái: happy, sad, angry, tired, hungry, thirsty, busy, afraid, alone, comfortable, excited, disappointed, jealous, nervous, quiet, worried, upset, relaxed, bored, ashamed, lazy, stupid, silly, clever, smart, wise, curious, honest, guilty, cruel, polite, rude, sensitive, worried, delighted

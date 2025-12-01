@@ -1,1 +1,0 @@
-Mạo từ/Chỉ định: the, a, an, this, that, these, those
