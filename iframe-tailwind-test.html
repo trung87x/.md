@@ -148,39 +148,36 @@
       function setIframe(html) {
         // Dùng srcdoc để đảm bảo same-origin -> có thể auto-resize
         iframe.srcdoc = html;
-
-        // Chờ iframe render để auto chỉnh chiều cao theo nội dung
-        setTimeout(() => {
-          try {
-            const doc = iframe.contentDocument;
-            const resize = () => {
-              const h = Math.max(
-                doc.body.scrollHeight,
-                doc.documentElement.scrollHeight
-              );
-              iframe.style.height = Math.min(Math.max(h, 400), 2000) + "px";
-            };
-            resize();
-            // Theo dõi thay đổi kích thước nội dung
-            const obs = new MutationObserver(resize);
-            obs.observe(doc.documentElement, {
-              childList: true,
-              subtree: true,
-              attributes: true,
-              characterData: true,
-            });
-          } catch (e) {
-            // ignore cross-origin issues (không xảy ra vì dùng srcdoc)
-          }
-        }, 50);
       }
 
       runBtn.addEventListener("click", () => setIframe(editor.value));
 
-      sampleBtn.addEventListener("click", () => {
-        editor.value = editor.value; // giữ nguyên sample hiện tại; bạn có thể thay bằng preset khác nếu muốn
-        setIframe(editor.value);
-      });
+      sampleBtn.addEventListener("click", () => setIframe(editor.value));
+
+      // Chờ iframe render để auto chỉnh chiều cao theo nội dung
+      iframe.onload = () => {
+        try {
+          const doc = iframe.contentDocument;
+          const resize = () => {
+            const h = Math.max(
+              doc.body.scrollHeight,
+              doc.documentElement.scrollHeight
+            );
+            iframe.style.height = Math.min(Math.max(h, 400), 2000) + "px";
+          };
+          resize();
+          // Theo dõi thay đổi kích thước nội dung
+          const obs = new MutationObserver(resize);
+          obs.observe(doc.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true,
+          });
+        } catch (e) {
+          // ignore cross-origin issues (không xảy ra vì dùng srcdoc)
+        }
+      };
 
       // Nạp lần đầu
       setIframe(editor.value);
