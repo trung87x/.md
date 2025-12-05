@@ -4,6 +4,7 @@ const crew = [
   { name: "Tu", id: uniqueId() },
   { name: "Tuan", id: uniqueId() },
 ];
+
 function User({ name, onClick }) {
   // inline style here.
   return (
@@ -22,6 +23,7 @@ function User({ name, onClick }) {
     </div>
   );
 }
+
 function uniqueId() {
   return Math.floor(Math.random() * 10000000);
 }

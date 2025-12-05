@@ -4,6 +4,7 @@ const crew = [
   { name: "Tu" },
   { name: "Tuan" },
 ];
+
 function User({ name, onClick }) {
   return (
     <button onClick={onClick} name={name}>
@@ -11,6 +12,7 @@ function User({ name, onClick }) {
     </button>
   );
 }
+
 export default function App() {
   function sayHello(e) {
     alert("hello, " + e.target.name);
