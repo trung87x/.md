@@ -14,7 +14,6 @@ function User(props) {
       {props.nestedAttribute}
     </div>
   );
-  s;
 }
 
 function UserDes({ name, data: { info }, jsxElement, nestedAttribute }) {
