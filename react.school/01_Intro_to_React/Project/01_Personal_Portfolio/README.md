@@ -1,17 +1,48 @@
-Đây là một ví dụ đầy đủ về cấu trúc mã nguồn của một Trang giới thiệu bản thân (Personal Portfolio) đơn giản, được xây dựng dựa trên các nguyên tắc và kỹ thuật React hiện đại mà chúng ta đã thảo luận (Functional Components, Destructuring, Lists, Keys, và Styled Components).
+Đây là một yêu cầu rất hợp lý và là bước tiếp theo quan trọng khi xây dựng một ứng dụng React chuyên nghiệp: **Tổ chức mã nguồn thành các file và thư mục riêng biệt**.
 
-Mã này bao gồm cả phần dữ liệu tĩnh, các Component con, và cách áp dụng styling động.
+Việc chia nhỏ Component giúp dự án dễ bảo trì, dễ đọc, và tối ưu hóa việc tái sử dụng code.
 
-* * *
+Dưới đây là cấu trúc thư mục dự án đề xuất, dựa trên các nguyên tắc về Functional Components, Props, và Styled Components:
 
-### File: `Portfolio.js` (hoặc `App.js`)
+### 1\. Cấu trúc Thư mục Dự án
 
-    import React from 'react';
-    // Import thư viện Styling được khuyến nghị
-    import styled, { createGlobalStyle } from 'styled-components';
+Bạn nên sử dụng cấu trúc tập trung các component vào thư mục `src/components`, và tách biệt phần styling nếu cần.
+
+    /my-portfolio-app
+    |-- /node_modules
+    |-- /public
+    |-- /src
+    |   |-- /components
+    |   |   |-- Header.js        // Component Header
+    |   |   |-- BioSection.js    // Component Giới thiệu bản thân
+    |   |   |-- SkillsList.js    // Component Danh sách kỹ năng
+    |   |   |-- Footer.js        // Component Footer
+    |   |   |-- index.js         // File để export tất cả components (tùy chọn)
+    |   |
+    |   |-- /data                // Nơi lưu trữ dữ liệu tĩnh (tùy chọn)
+    |   |   |-- portfolioData.js
+    |   |
+    |   |-- /styles              // Nơi lưu trữ các Styled Component tái sử dụng
+    |   |   |-- GlobalStyles.js
+    |   |   |-- StyleElements.js // Container, SkillTag, v.v.
+    |   |
+    |   |-- App.js               // Component chính (Tổ chức)
+    |   |-- index.js             // Điểm vào (Root file)
+    |
+    |-- package.json
     
-    // --- DỮ LIỆU TĨNH ---
-    const PORTFOLIO_DATA = {
+
+### 2\. Phân Tách Mã Nguồn vào các File
+
+Dưới đây là cách bạn sẽ phân tách mã nguồn trước đó vào các file riêng biệt:
+
+#### A. File `src/data/portfolioData.js` (Dữ liệu tĩnh)
+
+Việc tách dữ liệu tĩnh ra khỏi component giúp dễ dàng cập nhật nội dung.
+
+    // src/data/portfolioData.js
+    
+    export const PORTFOLIO_DATA = {
       name: "Nguyễn Văn A",
       title: "React Developer & UI Designer",
       bio: "Chào mừng! Tôi là Nguyễn Văn A, đam mê xây dựng giao diện người dùng hiệu quả và có tính thẩm mỹ cao bằng ReactJS.",
@@ -23,10 +54,43 @@ Mã này bao gồm cả phần dữ liệu tĩnh, các Component con, và cách 
       ]
     };
     
-    // --- STYLING (STYLED COMPONENTS) ---
+
+#### B. File `src/styles/StyleElements.js` (Styling cơ bản)
+
+Tạo và export các Styled Component để tái sử dụng.
+
+    // src/styles/StyleElements.js
+    import styled from 'styled-components';
     
-    // 1. Global Style (Áp dụng cho Body)
-    const GlobalStyle = createGlobalStyle`
+    export const Container = styled.div`
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    `;
+    
+    export const SkillTag = styled.span`
+      /* Logic styling động sử dụng destructuring props */
+      background-color: ${({ level }) =>
+        level === 'primary' ? '#4CAF50' : '#007bff'};
+      color: white;
+      display: inline-block;
+      padding: 8px 15px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      border-radius: 20px;
+      font-weight: bold;
+    `;
+    
+
+#### C. File `src/styles/GlobalStyles.js` (Global Styling)
+
+    // src/styles/GlobalStyles.js
+    import { createGlobalStyle } from 'styled-components';
+    
+    export const GlobalStyle = createGlobalStyle`
        body {
         background-color: #f8f8f8;
         color: #333;
@@ -36,40 +100,13 @@ Mã này bao gồm cả phần dữ liệu tĩnh, các Component con, và cách 
        }
     `;
     
-    // 2. Container chính (Giới hạn chiều rộng trang)
-    const Container = styled.div`
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    `;
+
+#### D. Component Con: `src/components/Header.js`
+
+    // src/components/Header.js
+    import React from 'react';
     
-    // 3. Component Tag cho kỹ năng (Sử dụng Styling Động)
-    const SkillTag = styled.span`
-      display: inline-block;
-      padding: 8px 15px;
-      margin-right: 10px;
-      margin-bottom: 10px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-    
-      /* Sử dụng Props để thay đổi màu sắc động */
-      background-color: ${({ level }) =>
-        level === 'primary' ? '#4CAF50' : '#007bff'};
-      color: white;
-    
-      &:hover {
-        opacity: 0.9;
-        cursor: pointer;
-      }
-    `;
-    
-    // --- COMPONENTS (FUNCTIONAL COMPONENTS) ---
-    
-    // 4. Component Header (Sử dụng Destructuring Props)
+    // Sử dụng Destructuring props để lấy giá trị name và title
     const Header = ({ name, title }) => (
       <header>
         <h1>{name}</h1>
@@ -78,79 +115,115 @@ Mã này bao gồm cả phần dữ liệu tĩnh, các Component con, và cách 
       </header>
     );
     
-    // 5. Component SkillsList (Sử dụng Rendering Lists và Keys)
-    const SkillsList = ({ skills }) => (
+    export default Header;
+    
+
+#### E. Component Con: `src/components/SkillsList.js`
+
+Component này minh họa việc **Rendering Lists** và sử dụng **Keys**.
+
+    // src/components/SkillsList.js
+    import React from 'react';
+    import { SkillTag } from '../styles/StyleElements'; // Import Styled Component
+    
+    const SkillsList = ({ skills }) => {
+        // Logic được trừu tượng hóa ra khỏi JSX
+        const shouldShowMessage = skills && skills.length > 0;
+    
+        return (
+            <section>
+                <h2>⚙️ Kỹ năng chuyên môn</h2>
+                <div style={{ padding: '10px 0' }}>
+                    {/* Rendering Lists bằng .map() */}
+                    {skills.map(skill => (
+                        <SkillTag
+                            key={skill.id} // Bắt buộc
+                            level={skill.level} // Props cho Styled Component
+                        >
+                            {skill.name}
+                        </SkillTag>
+                    ))}
+                </div>
+    
+                {/* Conditional Rendering */}
+                {shouldShowMessage &&
+                  <p style={{marginTop: '20px', fontStyle: 'italic'}}>
+                    Hãy liên hệ để thảo luận về các dự án!
+                  </p>
+                }
+            </section>
+        );
+    };
+    
+    export default SkillsList;
+    
+
+#### F. Component Con: `src/components/BioSection.js`
+
+    // src/components/BioSection.js
+    import React from 'react';
+    
+    const BioSection = ({ bio }) => (
       <section>
-        <h2>⚙️ Kỹ năng chuyên môn</h2>
-        <div style={{ padding: '10px 0' }}>
-          {/* Lặp qua mảng skills để render từng SkillTag */}
-          {skills.map(skill => (
-            <SkillTag
-              key={skill.id} // Bắt buộc phải có key duy nhất
-              level={skill.level} // Prop động cho Styled Component
-            >
-              {skill.name}
-            </SkillTag>
-          ))}
-        </div>
+        <h2>👨‍💻 Giới thiệu</h2>
+        <p>{bio}</p>
       </section>
     );
     
-    // 6. Component Footer (Component nhỏ, đơn giản)
-    const Footer = () => (
+    export default BioSection;
+    
+
+#### G. Component Con: `src/components/Footer.js`
+
+    // src/components/Footer.js
+    import React from 'react';
+    
+    const Footer = ({ name }) => (
       <footer style={{ textAlign: 'center', marginTop: '30px', color: '#aaa' }}>
-        {/* JSX Comment */}
-        <p>© {new Date().getFullYear()} {PORTFOLIO_DATA.name}. Built with React.</p>
+        <p>© {new Date().getFullYear()} {name}. Built with React.</p>
       </footer>
     );
     
+    export default Footer;
     
-    // 7. Component chính (Orchestration)
+
+#### H. Component Chính: `src/App.js` (Tổ chức Component)
+
+Component này chỉ làm nhiệm vụ nhập khẩu dữ liệu, styling, và tổ chức các Component con.
+
+    // src/App.js
+    import React from 'react';
+    import { PORTFOLIO_DATA } from './data/portfolioData'; // Dữ liệu
+    import { GlobalStyle } from './styles/GlobalStyles'; // Styling
+    import { Container } from './styles/StyleElements'; // Styling
+    import Header from './components/Header';
+    import BioSection from './components/BioSection';
+    import SkillsList from './components/SkillsList';
+    import Footer from './components/Footer';
+    
     export default function App() {
     
-      // Destructuring dữ liệu từ Object
+      // Destructuring dữ liệu
       const { name, title, bio, skills } = PORTFOLIO_DATA;
     
-      // Render toàn bộ cấu trúc
       return (
+        // Sử dụng Fragment
         <>
-          {/* Áp dụng Global Style */}
           <GlobalStyle />
     
           <Container>
     
-            {/* Truyền Props xuống Header */}
+            {/* Tổ chức Component con và truyền Props */}
             <Header name={name} title={title} />
-    
-            <section>
-              <h2>👨‍💻 Giới thiệu</h2>
-              <p>{bio}</p>
-            </section>
-    
-            {/* Truyền Props là một mảng dữ liệu xuống SkillsList */}
+            <BioSection bio={bio} />
             <SkillsList skills={skills} />
-    
-            {/* Conditional Rendering (ví dụ) */}
-            {skills.length > 0 &&
-              <p style={{marginTop: '20px', fontStyle: 'italic'}}>
-                Hãy liên hệ để thảo luận về các dự án!
-              </p>
-            }
     
           </Container>
     
-          {/* Fragment cho phép Footer đứng ngang hàng với Container */}
-          <Footer />
+          <Footer name={name} />
         </>
       );
     }
     
 
-### Giải thích các Nguyên tắc đã áp dụng
-
-1.  **Functional Components:** Toàn bộ giao diện được xây dựng bằng các hàm JavaScript độc lập (`Header`, `SkillsList`, `Footer`, `App`), tuân thủ quy tắc Functional Component.
-2.  **Fragments:** Component `App` sử dụng `<>...</>` để trả về nhiều phần tử ngang hàng (`GlobalStyle`, `Container`, `Footer`) mà không thêm thẻ `div` thừa vào DOM.
-3.  **Destructuring Props:** Component `Header` nhận dữ liệu bằng cách giải nén trực tiếp `{ name, title }`, giúp truy cập dữ liệu sạch sẽ hơn.
-4.  **Rendering Lists & Keys:** Component `SkillsList` dùng `.map()` để lặp qua mảng `skills`. Mỗi `SkillTag` được gán một `key` duy nhất là `skill.id` để hỗ trợ React theo dõi các phần tử trong danh sách một cách chính xác.
-5.  **Styled Components Động:** Component `SkillTag` sử dụng logic bên trong CSS (template literal) để đọc prop `level` và quyết định màu nền (`background-color`), minh họa cho việc truy cập Props từ Styled Components.
-6.  **Conditional Rendering:** Dòng `{skills.length > 0 && <p>...</p>}` sử dụng toán tử **Logical AND** để chỉ hiển thị đoạn văn bản nếu mảng `skills` có dữ liệu.
+Với cấu trúc này, bạn đã áp dụng thành công nguyên tắc chia nhỏ ứng dụng React thành các mảnh **Functional Component** có thể tái sử dụng.

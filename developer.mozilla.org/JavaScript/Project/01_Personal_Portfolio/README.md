@@ -1,187 +1,198 @@
-Tất nhiên rồi. Để đáp ứng yêu cầu của bạn, tôi đã gộp toàn bộ mã JavaScript (Dữ liệu, Hàm Render và Logic Chính) vào trong thẻ `<script>` đặt ở cuối file `portfolio.html`.
+Tuyệt vời! Dự án **Personal Portfolio** (Trang giới thiệu bản thân) là cơ hội hoàn hảo để thực hành cách tổ chức code theo hướng module hóa, tách biệt dữ liệu (Data) và giao diện (UI), đồng thời áp dụng triệt để các cú pháp ES6+ mà chúng ta đã thảo luận.
 
-File HTML này đã tích hợp đầy đủ các cú pháp hiện đại (Destructuring, Arrow Function, Template Literals, Array Methods) mà chúng ta đã thảo luận.
+Dưới đây là cấu trúc dự án mẫu, áp dụng: **ES Modules**, **Objects/Arrays**, **Destructuring**, **Template Literals**, **Arrow Functions** và **Ternary Operator**.
 
-    <!DOCTYPE html>
+Cấu trúc thư mục dự án
+
+/portfolio
+├── index.html
+├── js
+│ ├── data.js (Chứa dữ liệu cá nhân)
+│ ├── render.js (Chứa logic hiển thị HTML)
+│ └── main.js (File chính để chạy ứng dụng)
+
+\--------------------------------------------------------------------------------
+
+1\. File `js/data.js` (Dữ liệu)
+
+Chúng ta sẽ sử dụng **Object** và **Array** để lưu trữ thông tin. Việc tách dữ liệu ra file riêng giúp bạn dễ dàng cập nhật CV sau này mà không cần sửa logic code.
+
+/_ js/data.js _/
+
+    // Sử dụng const và Object.freeze để đảm bảo dữ liệu gốc không bị thay đổi [2]
+    export const profileData = Object.freeze({
+      name: "Nguyễn Văn Code",
+      role: "Frontend Developer",
+      bio: "Lập trình viên đam mê JavaScript và xây dựng giao diện người dùng hiện đại.",
+      social: {
+        github: "https://github.com/example",
+        linkedin: "https://linkedin.com/in/example",
+        website: null // Ví dụ trường hợp chưa có website
+      },
+      skills: ["JavaScript (ES6+)", "React", "HTML5/CSS3", "Git"],
+      projects: [
+        {
+          id: 1,
+          title: "Mini Shopping Cart",
+          desc: "Ứng dụng giỏ hàng đơn giản sử dụng Vanilla JS.",
+          isFinished: true
+        },
+        {
+          id: 2,
+          title: "Portfolio 2.0",
+          desc: "Trang cá nhân tích hợp Dark Mode.",
+          isFinished: false // Dự án đang làm
+        }
+      ]
+    });
+
+\--------------------------------------------------------------------------------
+
+2\. File `js/render.js` (Logic hiển thị)
+
+File này chứa các hàm thuần túy (pure functions) để tạo ra HTML string. Chúng ta sẽ dùng **Template Literals** để viết HTML nhiều dòng và **Destructuring** để code gọn hơn.
+
+/_ js/render.js _/
+
+    // 1. Hàm render thông tin cá nhân
+    // Sử dụng Destructuring ngay trong tham số hàm: ({ name, role, bio }) [5]
+    export const renderProfile = ({ name, role, bio, social }) => {
+      // Sử dụng Template Literals cho chuỗi đa dòng [6]
+      return `
+        <div class="profile-card">
+          <h1>${name}</h1>
+          <h2>${role}</h2>
+          <p>${bio}</p>
+          <div class="social-links">
+            ${
+              // Sử dụng Ternary Operator để kiểm tra null [7]
+              // Nếu có social.website thì hiện link, không thì hiện thông báo
+              social.website
+                ? `<a href="${social.website}">Website</a>`
+                : `<span class="disabled">No Website</span>`
+            }
+            <a href="${social.github}">GitHub</a>
+          </div>
+        </div>
+      `;
+    };
+
+    // 2. Hàm render danh sách kỹ năng
+    // Sử dụng Arrow Function ngắn gọn [8]
+    export const renderSkills = (skills) => {
+      // .map() biến đổi mảng string thành mảng HTML string [9]
+      // .join('') gộp mảng thành một chuỗi duy nhất [10]
+      const skillsHtml = skills.map(skill => `<span class="badge">${skill}</span>`).join('');
+
+      return `
+        <div class="skills-section">
+          <h3>Kỹ năng</h3>
+          <div class="skill-list">${skillsHtml}</div>
+        </div>
+      `;
+    };
+
+    // 3. Hàm render dự án
+    export const renderProjects = (projects) => {
+      return `
+        <div class="projects-section">
+          <h3>Dự án tiêu biểu</h3>
+          <ul>
+            ${projects.map(project => {
+                // Destructuring trong callback của map [11]
+                const { title, desc, isFinished } = project;
+
+                return `
+                  <li>
+                    <strong>${title}</strong>
+                    ${/* Ternary operator để đổi màu/trạng thái badge */ ''}
+                    <span class="status ${isFinished ? 'done' : 'wip'}">
+                      ${isFinished ? 'Hoàn thành' : 'Đang phát triển'}
+                    </span>
+                    <p>${desc}</p>
+                  </li>
+                `;
+            }).join('')}
+          </ul>
+        </div>
+      `;
+    };
+
+\--------------------------------------------------------------------------------
+
+3\. File `js/main.js` (Kết nối)
+
+Đây là nơi chúng ta **Import** các module lại với nhau và đưa vào DOM. Code trong module tự động chạy ở chế độ `strict mode`.
+
+/_ js/main.js _/
+
+    // Import Named Exports từ các file khác [13]
+    import { profileData } from './data.js';
+    import { renderProfile, renderSkills, renderProjects } from './render.js';
+
+    // Hàm khởi tạo ứng dụng
+    const initApp = () => {
+      const rootElement = document.getElementById('app');
+
+      if (!rootElement) return;
+
+      // Sử dụng Destructuring để lấy các mảng/object con từ profileData [14]
+      const { skills, projects, ...basicInfo } = profileData;
+
+      // Ghép các chuỗi HTML lại với nhau
+      // basicInfo chứa {name, role, bio, social} nhờ Rest syntax trong destructuring [15]
+      rootElement.innerHTML = `
+        ${renderProfile(basicInfo)}
+        <hr/>
+        ${renderSkills(skills)}
+        <hr/>
+        ${renderProjects(projects)}
+      `;
+    };
+
+    // Chạy hàm khởi tạo
+    initApp();
+
+\--------------------------------------------------------------------------------
+
+4\. File `index.html`
+
+Phần quan trọng nhất ở đây là thuộc tính `type="module"`. Nếu thiếu nó, trình duyệt sẽ không hiểu lệnh `import/export`.
+
+<!DOCTYPE html>
+
     <html lang="vi">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Personal Portfolio - Tổng hợp ES6+</title>
-
-        <!-- CSS Tối giản để hiển thị demo -->
+        <title>My Simple Portfolio</title>
         <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                max-width: 800px;
-                margin: 20px auto;
-                padding: 20px;
-                background-color: #f8f8f8;
-                color: #333;
-                line-height: 1.6;
-            }
-            header { margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 20px; }
-            h1 { color: #007bff; margin-bottom: 5px; }
-            h2 { color: #555; font-size: 1.2em; font-weight: normal; margin-top: 0; }
-            h3 { color: #333; border-left: 5px solid #007bff; padding-left: 10px; margin-top: 30px; }
-            .badge {
-                background: #e0f7fa;
-                color: #007bff;
-                padding: 5px 10px;
-                margin: 5px 5px 5px 0;
-                border-radius: 4px;
-                display: inline-block;
-                font-size: 0.9em;
-            }
-            .social-links a { margin-right: 15px; color: #007bff; text-decoration: none; }
-            .social-links a:hover { text-decoration: underline; }
-            .status.done { color: green; font-weight: bold; background: #e6ffed; padding: 2px 5px; border-radius: 3px; }
-            .status.wip { color: orange; font-style: italic; background: #fff8e6; padding: 2px 5px; border-radius: 3px; }
+            body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+            .badge { background: #eee; padding: 5px 10px; margin-right: 5px; border-radius: 4px; }
+            .status.done { color: green; }
+            .status.wip { color: orange; font-style: italic; }
             .disabled { color: gray; text-decoration: line-through; }
-            ul { list-style: none; padding-left: 0; }
-            li { margin-bottom: 15px; border-left: 3px solid #eee; padding-left: 10px; }
         </style>
     </head>
     <body>
-        <!-- Nơi nội dung sẽ được JavaScript tạo ra -->
-        <div id="app">
-            <!-- Chờ nội dung được render... -->
-        </div>
+        <!-- Nơi JavaScript sẽ "bơm" nội dung vào -->
+        <div id="app"></div>
 
-        <!-- KHỐI SCRIPT CHỨA TOÀN BỘ LOGIC JAVASCRIPT -->
-        <script>
-            /* ============================================================
-               1. DATA (Dữ liệu cá nhân)
-               Sử dụng Object.freeze() để bảo vệ hằng số.
-               ============================================================ */
-
-            // [Object.freeze] ngăn chặn việc thay đổi dữ liệu sau khi khởi tạo.
-            const profileData = Object.freeze({
-              name: "Nguyễn Văn Code",
-              role: "Frontend Developer (ES6+ Enthusiast)",
-              bio: "Lập trình viên đam mê JavaScript và xây dựng giao diện người dùng hiện đại. Thích sử dụng cú pháp gọn gàng, hiệu quả.",
-              social: {
-                github: "https://github.com/example",
-                linkedin: "https://linkedin.com/in/example",
-                website: null // Giá trị này sẽ được kiểm tra bằng toán tử ba ngôi
-              },
-              skills: ["JavaScript (ES6+)", "React", "HTML5/CSS3", "Git", "Destructuring", "Array Methods"],
-              projects: [
-                {
-                  id: 1,
-                  title: "Mini Shopping Cart",
-                  desc: "Ứng dụng giỏ hàng đơn giản sử dụng Vanilla JS. Tập trung vào Array Methods và Destructuring.",
-                  isFinished: true
-                },
-                {
-                  id: 2,
-                  title: "Portfolio 2.0",
-                  desc: "Trang cá nhân tích hợp Dark Mode. Hiện đang ở trạng thái 'Đang phát triển'.",
-                  isFinished: false
-                }
-              ]
-            });
-
-
-            /* ============================================================
-               2. RENDER FUNCTIONS (Hàm tạo HTML)
-               Sử dụng [Arrow Functions] và [Template Literals]
-               ============================================================ */
-
-            // [Arrow Function] với [Destructuring] trong tham số
-            const renderProfile = ({ name, role, bio, social }) => {
-              // [Template Literals] cho phép chuỗi đa dòng
-              return `
-                <header>
-                  <h1>${name}</h1>
-                  <h2>${role}</h2>
-                  <p>${bio}</p>
-                  <div class="social-links">
-                    ${
-                      // [Ternary Operator]: Kiểm tra social.website có tồn tại (truthy) không
-                      social.website
-                        ? `<a href="${social.website}" target="_blank">Website</a>`
-                        : `<span class="disabled">Chưa có Website</span>`
-                    }
-                    <a href="${social.github}" target="_blank">GitHub</a>
-                    <a href="${social.linkedin}" target="_blank">LinkedIn</a>
-                  </div>
-                </header>
-              `;
-            };
-
-            // Hàm render danh sách kỹ năng
-            const renderSkills = (skills) => {
-              // [Array.prototype.map] để biến đổi mảng dữ liệu thành mảng HTML string
-              const skillsHtml = skills.map(skill =>
-                `<span class="badge">${skill}</span>`
-              ).join(''); // .join('') gộp mảng thành một chuỗi duy nhất
-
-              return `
-                <section class="skills-section">
-                  <h3>🛠️ Kỹ năng</h3>
-                  <div class="skill-list">${skillsHtml}</div>
-                </section>
-              `;
-            };
-
-            // Hàm render dự án
-            const renderProjects = (projects) => {
-              return `
-                <section class="projects-section">
-                  <h3>🚀 Dự án tiêu biểu</h3>
-                  <ul>
-                    ${projects.map(project => {
-                        // [Destructuring] trong callback của map
-                        const { title, desc, isFinished } = project;
-
-                        return `
-                          <li>
-                            <strong>${title}</strong>
-                            <span class="status ${
-                              // [Ternary Operator] lồng nhau để chọn class CSS
-                              isFinished ? 'done' : 'wip'
-                            }">
-                              ${isFinished ? 'Hoàn thành' : 'Đang phát triển'}
-                            </span>
-                            <p>${desc}</p>
-                          </li>
-                        `;
-                    }).join('')}
-                  </ul>
-                </section>
-              `;
-            };
-
-
-            // ============================================================
-            // 3. MAIN LOGIC (Khởi chạy ứng dụng)
-            // ============================================================
-
-            const initApp = () => {
-              const rootElement = document.getElementById('app');
-
-              if (!rootElement) {
-                console.error("Không tìm thấy phần tử #app để render nội dung.");
-                return;
-              }
-
-              // [Destructuring Assignment] với [Rest Property]
-              // Tách mảng skills và projects, phần còn lại gom vào basicInfo
-              const { skills, projects, ...basicInfo } = profileData;
-
-              // Ghép các chuỗi HTML đã tạo lại và chèn vào DOM
-              rootElement.innerHTML = `
-                ${renderProfile(basicInfo)}
-                <hr/>
-                ${renderSkills(skills)}
-                <hr/>
-                ${renderProjects(projects)}
-              `;
-            };
-
-            // Chạy hàm khởi tạo ngay lập tức
-            initApp();
-        </script>
+        <!-- KHAI BÁO MODULE: Bắt buộc phải có type="module" -->
+        <script type="module" src="./js/main.js"></script>
     </body>
     </html>
+
+Tổng kết các kỹ thuật đã dùng:
+
+1. **Modules (Import/Export):** Chúng ta chia nhỏ code: `data.js` chỉ chứa thông tin, `render.js` chỉ chứa giao diện. Điều này giúp code dễ bảo trì hơn rất nhiều so với viết tất cả trong một file.
+
+2. **Template Literals (\*\***\`\`\***\*):** Thay vì cộng chuỗi `'<h1>' + name + '</h1>'` rất rối mắt, ta dùng `${name}` để nhúng biến trực tiếp vào HTML.
+
+3. **Destructuring:** Trong hàm `renderProfile`, thay vì viết `data.name`, `data.role`, ta bóc tách ngay từ đầu `({ name, role })` giúp code ngắn gọn và rõ nghĩa.
+
+4. **Array Methods (\*\***.map\***\*,** **.join\*\***):\*\* Đây là "combo" kinh điển để tạo danh sách HTML từ mảng dữ liệu. `.map` biến đổi từng object dự án thành chuỗi HTML `<li>...</li>`, và `.join('')` nối chúng lại thành một khối liền mạch.
+
+5. **Ternary Operator (\*\***? :\***\*):** Xử lý logic hiển thị thông minh: nếu dự án chưa xong (`isFinished: false`), nó tự động hiện nhãn "Đang phát triển" màu cam mà không cần viết khối `if-else` dài dòng.
+
+Bạn có thể tạo các file này trên máy tính và mở `index.html` bằng **Live Server** (hoặc một local server bất kỳ) để xem kết quả. Lưu ý là Modules không chạy trực tiếp qua giao thức `file://` do bảo mật CORS.
