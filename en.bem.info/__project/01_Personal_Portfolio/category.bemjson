@@ -1,0 +1,43 @@
+[
+  {
+    block: 'header',
+    content: [
+      { block: 'logo', content: 'BLOG CÔNG NGHỆ' },
+      { block: 'menu', mods: { type: 'main' } }
+    ]
+  },
+
+  {
+    block: 'page-title',
+    content: 'Danh mục: Lập Trình Web'
+  },
+
+  {
+    block: 'layout',
+    elem: 'main',
+    content: [
+      {
+        block: 'posts-list',
+        content: [
+          { block: 'post-card' },
+          { block: 'post-card' }
+        ]
+      },
+      
+      { block: 'pagination', mods: { theme: 'basic' } },
+
+      {
+        block: 'sidebar',
+        content: [
+          { block: 'categories-widget' },
+          { block: 'tags-cloud' }
+        ]
+      }
+    ]
+  },
+
+  {
+    block: 'footer',
+    content: { elem: 'copyright', content: '© 2025 Blog Công Nghệ' }
+  }
+]
