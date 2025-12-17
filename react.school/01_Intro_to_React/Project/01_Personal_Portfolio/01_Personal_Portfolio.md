@@ -65,6 +65,7 @@ Cấu trúc này dựa trên việc ánh xạ các Block BEMJSON thành các Com
         ├── pages/
         │   ├── CategoryPage.jsx           // Trang hiển thị danh sách bài viết theo Danh mục
         │   └── PostDetailPage.jsx         // Trang hiển thị Bài viết Chi tiết
+        │   └── HomePage.jsx               // Trang chủ
         │
         ├── App.jsx
         └── index.js
