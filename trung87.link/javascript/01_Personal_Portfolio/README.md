@@ -1,5 +1,3 @@
-Tuyệt vời! Dự án **Personal Portfolio** (Trang giới thiệu bản thân) là cơ hội hoàn hảo để thực hành cách tổ chức code theo hướng module hóa, tách biệt dữ liệu (Data) và giao diện (UI), đồng thời áp dụng triệt để các cú pháp ES6+ mà chúng ta đã thảo luận.
-
 Dưới đây là cấu trúc dự án mẫu, áp dụng: **ES Modules**, **Objects/Arrays**, **Destructuring**, **Template Literals**, **Arrow Functions** và **Ternary Operator**.
 
 Cấu trúc thư mục dự án
