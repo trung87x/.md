@@ -1,0 +1,304 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --main-50: #e8f1fc;
+  --main-100: #d1e4fa;
+  --main-200: #a2c9f5;
+  --main-300: #74adef;
+  --main-400: #4592ea;
+  --main-500: #1777e5;
+  --main-600: #125fb7;
+  --main-700: #0e4789;
+  --main-800: #09305c;
+  --main-900: #05182e;
+
+  --font-main: "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  color: var(--main-900);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography - Headings */
+.heading-display-01 {
+  font-weight: 600;
+  font-size: 80px;
+  line-height: 80px;
+}
+.heading-01 {
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 56px;
+}
+.heading-02 {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 48px;
+}
+.heading-03 {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 40px;
+}
+.heading-04 {
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 32px;
+}
+.heading-05 {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 64px;
+}
+
+/* Typography - Captions (Thường dùng cho nhãn, ghi chú) */
+.caption-01 {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 32px;
+}
+.caption-02 {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+}
+.caption-03 {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+}
+.caption-04 {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+}
+.caption-05 {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+}
+.caption-06 {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+/* Typography - Body */
+.body-xxl-400 {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 36px;
+}
+.body-xxl-500 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 36px;
+}
+.body-xl-400 {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+}
+.body-xl-500 {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 32px;
+}
+.body-large-400 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+}
+.body-large-500 {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 26px;
+}
+.body-regular-400 {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+.body-regular-500 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+}
+.body-small-400 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+}
+.body-small-500 {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+}
+.body-xs-400 {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+}
+.body-xs-500 {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* Base Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+.btn i {
+  color: inherit;
+}
+
+/* Solid (Màu đặc) */
+.btn--primary {
+  background-color: var(--main-500);
+  color: #fff;
+}
+
+.btn--dark {
+  background-color: var(--main-600);
+  color: #fff;
+}
+
+/* Outline (Viền rõ) */
+.btn--outline {
+  border-color: var(--main-500);
+  color: var(--main-500);
+  background: transparent;
+}
+
+.btn--outline-dark {
+  border-color: var(--main-600);
+  color: var(--main-600);
+  background: var(--main-50);
+}
+
+/* Soft Outline (Viền nhạt) */
+.btn--soft {
+  border-color: var(--main-100);
+  color: var(--main-500);
+  background: transparent;
+}
+
+.btn--soft-dark {
+  border-color: var(--main-500);
+  color: var(--main-500);
+  background: transparent;
+}
+
+/* Ghost/Light (Nền nhạt) */
+.btn--ghost {
+  background-color: var(--main-50);
+  color: var(--main-500);
+}
+
+.btn--ghost-dark {
+  background-color: var(--main-100);
+  color: var(--main-600);
+}
+
+/* Nút điều hướng nhỏ (Mũi tên trái/phải) */
+.nav-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Border & Background */
+  border: 1px solid var(--main-100);
+  background: #ffffff;
+  color: var(--main-900);
+
+  /* Interaction */
+  cursor: pointer;
+}
+.nav-circle--solid {
+  background: var(--main-500);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+
+/* Nút Icon liên hệ */
+.icon-circle {
+  /* Kích thước và hình dạng */
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+
+  /* Căn giữa icon bên trong */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Màu sắc mặc định (Primary) */
+  background: var(--main-500);
+  color: #ffffff;
+
+  /* Font và viền */
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}
+.icon-circle--dark {
+  background: var(--main-700);
+}
+
+/* Large Action Circle (Request Quote) */
+.quote-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--main-500);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+}
+
+.quote-circle__icon {
+  font-size: 24px;
+  background: #ffffff;
+  color: var(--main-500);
+  border-radius: 50%;
+  padding: 8px;
+}
+.quote-circle--dark {
+  background: var(--main-700);
+}
+.quote-circle--dark .quote-circle__icon {
+  color: var(--main-700);
+}

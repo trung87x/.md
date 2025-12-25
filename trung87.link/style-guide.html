@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Style guide</title>
+    <link rel="stylesheet" href="./style-guide.css" />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .typo-guide__row {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+      .typo-guide__col {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .components__row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        gap: 15px;
+      }
+
+      @media (min-width: 768px) {
+        body {
+          padding: 60px;
+        }
+
+        .typo-guide__row {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 100px;
+          justify-content: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Color</h2>
+      <section>
+        <h3 class="caption-02">primary</h3>
+        <div style="display: flex; height: 60px; width: 100%">
+          <div style="flex: 1; background-color: var(--main-50)"></div>
+          <div style="flex: 1; background-color: var(--main-100)"></div>
+          <div style="flex: 1; background-color: var(--main-200)"></div>
+          <div style="flex: 1; background-color: var(--main-300)"></div>
+          <div style="flex: 1; background-color: var(--main-400)"></div>
+          <div style="flex: 1; background-color: var(--main-500)"></div>
+          <div style="flex: 1; background-color: var(--main-600)"></div>
+          <div style="flex: 1; background-color: var(--main-700)"></div>
+          <div style="flex: 1; background-color: var(--main-800)"></div>
+          <div style="flex: 1; background-color: var(--main-900)"></div>
+        </div>
+      </section>
+    </section>
+
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Typography</h2>
+      <h3 class="caption-02">inter</h3>
+      <div class="typo-guide__row">
+        <div class="typo-guide__col">
+          <div class="heading-display-01">Display/01</div>
+          <div class="heading-01">Heading/01</div>
+          <div class="heading-02">Heading/02</div>
+          <div class="heading-03">Heading/03</div>
+          <div class="heading-04">Heading/04</div>
+          <div class="heading-05">Heading/05</div>
+        </div>
+        <div class="typo-guide__col">
+          <div class="caption-01">CAPTION/01</div>
+          <div class="caption-02">CAPTION/02</div>
+          <div class="caption-03">CAPTION/03</div>
+          <div class="caption-04">CAPTION/04</div>
+          <div class="caption-05">CAPTION/05</div>
+          <div class="caption-06">CAPTION/06</div>
+        </div>
+        <div class="typo-guide__col">
+          <div class="body-xxl-400">Body/XXL/400</div>
+          <div class="body-xxl-500">Body/XXL/500</div>
+          <div class="body-xl-400">Body/XL/400</div>
+          <div class="body-xl-500">Body/XL/500</div>
+          <div class="body-large-400">Body/Large/400</div>
+          <div class="body-large-500">Body/Large/500</div>
+          <div class="body-regular-400">Body/Regular/400</div>
+          <div class="body-regular-500">Body/Regular/500</div>
+          <div class="body-small-400">Body/Small/400</div>
+          <div class="body-small-500">Body/Small/500</div>
+          <div class="body-xs-400">Body/XS/400</div>
+          <div class="body-xs-500">Body/XS/500</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Iconography</h2>
+      <h3 class="caption-02">phosphor</h3>
+      <p class="body-regular-400" style="width: 275px">
+        Phosphor is a flexible icon family for interfaces, diagrams,
+        presentations -- whatever, really.
+      </p>
+    </section>
+
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Components</h2>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <button class="btn btn--primary">Say hello</button>
+        <button class="btn btn--dark">Say hello</button>
+        <button class="btn btn--primary">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--primary">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--primary">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <button class="btn btn--outline">Say hello</button>
+        <button class="btn btn--outline-dark">Say hello</button>
+        <button class="btn btn--outline">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--outline">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--outline">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <button class="btn btn--soft">Say hello</button>
+        <button class="btn btn--soft-dark">Say hello</button>
+        <button class="btn btn--soft">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--soft">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--soft">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <button class="btn btn--ghost">Say hello</button>
+        <button class="btn btn--ghost-dark">Say hello</button>
+        <button class="btn btn--ghost">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--ghost">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--ghost">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <button class="nav-circle">
+          <i class="ph-bold ph-caret-left"></i>
+        </button>
+        <button class="nav-circle nav-circle--solid">
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <button class="icon-circle">
+          <i class="ph-bold ph-envelope"></i>
+        </button>
+        <button class="icon-circle icon-circle--dark">
+          <i class="ph-bold ph-envelope"></i>
+        </button>
+      </div>
+
+      <div class="components__row" style="margin-bottom: 15px">
+        <a href="#" class="quote-circle">
+          <i class="ph-bold ph-arrow-up-right quote-circle__icon"></i>
+          <span>Request Quote</span>
+        </a>
+        <a href="#" class="quote-circle quote-circle--dark">
+          <i class="ph-bold ph-arrow-up-right quote-circle__icon"></i>
+          <span>Request Quote</span>
+        </a>
+      </div>
+    </section>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  </body>
+</html>
