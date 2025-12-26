@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Style Guide - Tailwind CDN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-main-50: #e8f1fc;
+        --color-main-100: #d1e4fa;
+        --color-main-200: #a2c9f5;
+        --color-main-300: #74adef;
+        --color-main-400: #4592ea;
+        --color-main-500: #1777e5;
+        --color-main-600: #125fb7;
+        --color-main-700: #0e4789;
+        --color-main-800: #09305c;
+        --color-main-900: #05182e;
+
+        --font-main: "Inter", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      @layer base {
+        body {
+          @apply font-main text-main-900 antialiased;
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      /* Typography Utilities */
+      @utility heading-display-01 {
+        font-weight: 600;
+        font-size: 80px;
+        line-height: 80px;
+      }
+      @utility heading-01 {
+        font-weight: 600;
+        font-size: 48px;
+        line-height: 56px;
+      }
+      @utility heading-02 {
+        font-weight: 600;
+        font-size: 40px;
+        line-height: 48px;
+      }
+      @utility heading-03 {
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 40px;
+      }
+      @utility heading-04 {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 32px;
+      }
+      @utility heading-05 {
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 64px;
+      }
+
+      @utility caption-base {
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      @utility caption-01 {
+        @apply caption-base;
+        font-size: 20px;
+        line-height: 32px;
+      }
+      @utility caption-02 {
+        @apply caption-base;
+        font-size: 18px;
+        line-height: 28px;
+      }
+      @utility caption-03 {
+        @apply caption-base;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      @utility caption-04 {
+        @apply caption-base;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      @utility caption-05 {
+        @apply caption-base;
+        font-size: 12px;
+        line-height: 16px;
+      }
+      @utility caption-06 {
+        @apply caption-base;
+        font-size: 10px;
+        line-height: 12px;
+      }
+
+      /* Body Typography */
+      @utility body-xxl-400 {
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 36px;
+      }
+      @utility body-xxl-500 {
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 36px;
+      }
+      @utility body-xl-400 {
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 32px;
+      }
+      @utility body-xl-500 {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 32px;
+      }
+      @utility body-large-400 {
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 26px;
+      }
+      @utility body-large-500 {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 26px;
+      }
+      @utility body-regular-400 {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      @utility body-regular-500 {
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      @utility body-small-400 {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      @utility body-small-500 {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      @utility body-xs-400 {
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+      }
+      @utility body-xs-500 {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 18px;
+      }
+
+      /* Component Classes (Buttons & Circles) */
+      @layer components {
+        .btn {
+          @apply inline-flex items-center justify-center gap-[10px] px-6 py-3 rounded-lg 
+           font-main font-medium text-base cursor-pointer transition-all duration-200 
+           border border-transparent no-underline;
+        }
+
+        .btn--primary {
+          @apply bg-main-500 text-white hover:bg-main-600;
+        }
+        .btn--dark {
+          @apply bg-main-600 text-white hover:bg-main-700;
+        }
+        .btn--outline {
+          @apply border-main-500 text-main-500 bg-transparent hover:bg-main-50;
+        }
+        .btn--outline-dark {
+          @apply border-main-600 text-main-600 bg-main-50 hover:bg-main-100;
+        }
+        .btn--soft {
+          @apply border-main-100 text-main-500 bg-transparent hover:border-main-200;
+        }
+        .btn--soft-dark {
+          @apply border-main-500 text-main-500 bg-transparent hover:border-main-600;
+        }
+        .btn--ghost {
+          @apply border-main-500 bg-transparent text-main-500 hover:bg-main-100;
+        }
+        .btn--ghost-dark {
+          @apply bg-main-100 text-main-600 hover:bg-main-200;
+        }
+
+        /* Navigation Circles */
+        .nav-circle {
+          @apply w-12 h-12 rounded-full flex items-center justify-center border border-main-100 
+           bg-white text-main-900 cursor-pointer transition-colors hover:bg-main-50;
+        }
+        .nav-circle--solid {
+          @apply bg-main-500 text-white border-transparent hover:bg-main-600;
+        }
+
+        /* Icon Circles */
+        .icon-circle {
+          @apply w-14 h-14 rounded-full flex items-center justify-center bg-main-500 
+           text-white text-xl border-none cursor-pointer transition-transform hover:scale-105;
+        }
+        .icon-circle-dark {
+          @apply bg-main-700;
+        }
+
+        /* Quote Circle */
+        .quote-circle {
+          @apply w-40 h-40 rounded-full bg-main-500 text-white flex flex-col items-center 
+           justify-center gap-3 text-center font-medium no-underline border-none 
+           transition-transform hover:scale-105;
+        }
+        .quote-circle__icon {
+          @apply text-2xl bg-white text-main-500 rounded-full p-2;
+        }
+        .quote-circle--dark {
+          @apply bg-main-700;
+        }
+        .quote-circle--dark .quote-circle__icon {
+          @apply text-main-700;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex flex-col gap-5 p-5 md:p-[60px]">
+    <section class="mb-[50px]">
+      <h2 class="heading-02" style="color: gray">Color</h2>
+      <section>
+        <h3 class="caption-02">primary</h3>
+        <div class="flex h-[60px] w-full">
+          <div class="flex-1 bg-main-50"></div>
+          <div class="flex-1 bg-main-100"></div>
+          <div class="flex-1 bg-main-200"></div>
+          <div class="flex-1 bg-main-300"></div>
+          <div class="flex-1 bg-main-400"></div>
+          <div class="flex-1 bg-main-500"></div>
+          <div class="flex-1 bg-main-600"></div>
+          <div class="flex-1 bg-main-700"></div>
+          <div class="flex-1 bg-main-800"></div>
+          <div class="flex-1 bg-main-900"></div>
+        </div>
+      </section>
+    </section>
+
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Typography</h2>
+      <h3 class="caption-02">inter</h3>
+      <div
+        class="flex flex-col gap-10 md:flex-row md:flex-wrap md:gap-[100px] md:justify-start"
+      >
+        <div class="flex flex-col gap-[10px]">
+          <div class="heading-display-01">Display/01</div>
+          <div class="heading-01">Heading/01</div>
+          <div class="heading-02">Heading/02</div>
+          <div class="heading-03">Heading/03</div>
+          <div class="heading-04">Heading/04</div>
+          <div class="heading-05">Heading/05</div>
+        </div>
+        <div class="flex flex-col gap-[10px]">
+          <div class="caption-01">CAPTION/01</div>
+          <div class="caption-02">CAPTION/02</div>
+          <div class="caption-03">CAPTION/03</div>
+          <div class="caption-04">CAPTION/04</div>
+          <div class="caption-05">CAPTION/05</div>
+          <div class="caption-06">CAPTION/06</div>
+        </div>
+        <div class="flex flex-col gap-[10px]">
+          <div class="body-xxl-400">Body/XXL/400</div>
+          <div class="body-xxl-500">Body/XXL/500</div>
+          <div class="body-xl-400">Body/XL/400</div>
+          <div class="body-xl-500">Body/XL/500</div>
+          <div class="body-large-400">Body/Large/400</div>
+          <div class="body-large-500">Body/Large/500</div>
+          <div class="body-regular-400">Body/Regular/400</div>
+          <div class="body-regular-500">Body/Regular/500</div>
+          <div class="body-small-400">Body/Small/400</div>
+          <div class="body-small-500">Body/Small/500</div>
+          <div class="body-xs-400">Body/XS/400</div>
+          <div class="body-xs-500">Body/XS/500</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Iconography</h2>
+      <h3 class="caption-02">phosphor</h3>
+      <p class="body-regular-400" style="width: 275px">
+        Phosphor is a flexible icon family for interfaces, diagrams,
+        presentations -- whatever, really.
+      </p>
+    </section>
+
+    <section style="margin-bottom: 50px">
+      <h2 class="heading-02" style="color: gray">Components</h2>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <button class="btn btn--primary">Say hello</button>
+        <button class="btn btn--dark">Say hello</button>
+        <button class="btn btn--primary">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--primary">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--primary">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <button class="btn btn--outline">Say hello</button>
+        <button class="btn btn--outline-dark">Say hello</button>
+        <button class="btn btn--outline">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--outline">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--outline">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <button class="btn btn--soft">Say hello</button>
+        <button class="btn btn--soft-dark">Say hello</button>
+        <button class="btn btn--soft">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--soft">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--soft">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <button class="btn btn--ghost">Say hello</button>
+        <button class="btn btn--ghost-dark">Say hello</button>
+        <button class="btn btn--ghost">
+          Say hello <i class="ph-bold ph-caret-right"></i>
+        </button>
+        <button class="btn btn--ghost">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+        </button>
+        <button class="btn btn--ghost">
+          <i class="ph-bold ph-music-notes"></i>
+          Say hello
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <button class="nav-circle">
+          <i class="ph-bold ph-caret-left"></i>
+        </button>
+        <button class="nav-circle nav-circle--solid">
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <button class="icon-circle">
+          <i class="ph-bold ph-envelope"></i>
+        </button>
+        <button class="icon-circle icon-circle--dark">
+          <i class="ph-bold ph-envelope"></i>
+        </button>
+      </div>
+
+      <div
+        class="flex flex-wrap justify-start gap-[15px]"
+        style="margin-bottom: 15px"
+      >
+        <a href="#" class="quote-circle">
+          <i class="ph-bold ph-arrow-up-right quote-circle__icon"></i>
+          <span>Request Quote</span>
+        </a>
+        <a href="#" class="quote-circle quote-circle--dark">
+          <i class="ph-bold ph-arrow-up-right quote-circle__icon"></i>
+          <span>Request Quote</span>
+        </a>
+      </div>
+    </section>
+  </body>
+</html>
