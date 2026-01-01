@@ -1,1 +1,0 @@
-Quan hệ: friend, family, father, mother, parent(s), son, daughter, brother, sister, cousin, partner, wife, others, boyfriend, girlfriend, colleague, classmate, roommate, acquaintance, stranger

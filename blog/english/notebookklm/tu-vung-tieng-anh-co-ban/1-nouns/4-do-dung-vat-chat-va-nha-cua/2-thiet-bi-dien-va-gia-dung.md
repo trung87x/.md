@@ -1,1 +1,0 @@
-Thiết bị điện/Gia dụng: phone, computer, screen, keyboard, mouse, TV, radio, fan, air conditioner, heater, thermostat, light bulb, flashlight, extension cord, power strip, socket, plug, charger, washing machine, dryer, iron, ironing board, vacuum cleaner, microwave, oven, refrigerator, freezer, rice cooker, toaster, blender, kettle, alarm clock

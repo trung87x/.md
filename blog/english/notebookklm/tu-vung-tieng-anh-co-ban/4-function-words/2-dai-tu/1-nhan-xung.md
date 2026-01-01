@@ -1,1 +1,0 @@
-Nhân xưng: I, you, he, she, it, we, they, me, him, her, us, them

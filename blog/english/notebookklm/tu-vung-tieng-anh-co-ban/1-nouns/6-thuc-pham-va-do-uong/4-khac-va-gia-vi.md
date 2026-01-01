@@ -1,1 +1,0 @@
-Khác/Gia vị: soup, cake, chocolate, cookie, ice cream, pie, doughnut, muffin, cupcake, pudding, jelly, jam, peanut butter, pepper, garlic, onion, ginger, turmeric, cinnamon, cumin, curry, basil, cilantro, parsley, mint, rosemary, thyme, oregano, vinegar, soy sauce, fish sauce, chili, bay leaf, paprika, dish, salad

@@ -1,1 +1,0 @@
-Thời gian: time, year, day, week, hour, minute, second, month, childhood, future, past, present, morning, afternoon, evening, night, today, yesterday, tomorrow, weekend, holiday, birthday, season, date, period, moment
