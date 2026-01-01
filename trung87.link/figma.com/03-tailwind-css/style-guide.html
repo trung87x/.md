@@ -35,145 +35,117 @@
 
       @layer base {
         body {
-          @apply font-main text-main-900 antialiased;
-          margin: 0;
-          padding: 0;
+          @apply font-main text-main-900 antialiased m-0 p-0;
         }
       }
 
-      /* Typography Utilities */
+      /* Typography - Headings */
       @utility heading-display-01 {
-        font-weight: 600;
-        font-size: 80px;
-        line-height: 80px;
-      }
-      @utility heading-01 {
-        font-weight: 600;
-        font-size: 48px;
-        line-height: 56px;
-      }
-      @utility heading-02 {
-        font-weight: 600;
-        font-size: 40px;
-        line-height: 48px;
-      }
-      @utility heading-03 {
-        font-weight: 600;
-        font-size: 32px;
-        line-height: 40px;
-      }
-      @utility heading-04 {
-        font-weight: 600;
-        font-size: 24px;
-        line-height: 32px;
-      }
-      @utility heading-05 {
-        font-weight: 600;
-        font-size: 18px;
-        line-height: 64px;
+        @apply font-semibold text-[80px] leading-[80px];
       }
 
+      @utility heading-01 {
+        @apply font-semibold text-[48px] leading-[56px];
+      }
+
+      @utility heading-02 {
+        @apply font-semibold text-[40px] leading-[48px];
+      }
+
+      @utility heading-03 {
+        @apply font-semibold text-[32px] leading-[40px];
+      }
+
+      @utility heading-04 {
+        @apply font-semibold text-[24px] leading-[32px];
+      }
+
+      @utility heading-05 {
+        @apply font-semibold text-[18px] leading-[64px];
+      }
+
+      /* Typography - Captions */
       @utility caption-base {
-        text-transform: uppercase;
-        font-weight: 600;
+        @apply font-semibold uppercase;
       }
+
       @utility caption-01 {
-        @apply caption-base;
-        font-size: 20px;
-        line-height: 32px;
+        @apply caption-base text-[20px] leading-[32px];
       }
+
       @utility caption-02 {
-        @apply caption-base;
-        font-size: 18px;
-        line-height: 28px;
+        @apply caption-base text-[18px] leading-[28px];
       }
+
       @utility caption-03 {
-        @apply caption-base;
-        font-size: 16px;
-        line-height: 24px;
+        @apply caption-base text-[16px] leading-[24px];
       }
+
       @utility caption-04 {
-        @apply caption-base;
-        font-size: 14px;
-        line-height: 20px;
+        @apply caption-base text-[14px] leading-[20px];
       }
+
       @utility caption-05 {
-        @apply caption-base;
-        font-size: 12px;
-        line-height: 16px;
+        @apply caption-base text-[12px] leading-[16px];
       }
+
       @utility caption-06 {
-        @apply caption-base;
-        font-size: 10px;
-        line-height: 12px;
+        @apply caption-base text-[10px] leading-[12px];
       }
 
       /* Body Typography */
       @utility body-xxl-400 {
-        font-weight: 400;
-        font-size: 24px;
-        line-height: 36px;
+        @apply font-normal text-[24px] leading-[36px];
       }
+
       @utility body-xxl-500 {
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 36px;
+        @apply font-medium text-[24px] leading-[36px];
       }
+
       @utility body-xl-400 {
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 32px;
+        @apply font-normal text-[20px] leading-[32px];
       }
+
       @utility body-xl-500 {
-        font-weight: 500;
-        font-size: 20px;
-        line-height: 32px;
+        @apply font-medium text-[20px] leading-[32px];
       }
+
       @utility body-large-400 {
-        font-weight: 400;
-        font-size: 18px;
-        line-height: 26px;
+        @apply font-normal text-[18px] leading-[26px];
       }
+
       @utility body-large-500 {
-        font-weight: 500;
-        font-size: 18px;
-        line-height: 26px;
+        @apply font-medium text-[18px] leading-[26px];
       }
+
       @utility body-regular-400 {
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 24px;
+        @apply font-normal text-[16px] leading-[24px];
       }
+
       @utility body-regular-500 {
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
+        @apply font-medium text-[16px] leading-[24px];
       }
+
       @utility body-small-400 {
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 20px;
+        @apply font-normal text-[14px] leading-[20px];
       }
+
       @utility body-small-500 {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
+        @apply font-medium text-[14px] leading-[20px];
       }
+
       @utility body-xs-400 {
-        font-weight: 400;
-        font-size: 12px;
-        line-height: 18px;
+        @apply font-normal text-[12px] leading-[18px];
       }
+
       @utility body-xs-500 {
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 18px;
+        @apply font-medium text-[12px] leading-[18px];
       }
 
       /* Component Classes (Buttons & Circles) */
       @layer components {
         .btn {
-          @apply inline-flex items-center justify-center gap-[10px] px-6 py-3 rounded-lg 
+          @apply flex items-center justify-center gap-[10px] px-6 py-3 rounded-lg 
            font-main font-medium text-base cursor-pointer transition-all duration-200 
            border border-transparent no-underline;
         }
