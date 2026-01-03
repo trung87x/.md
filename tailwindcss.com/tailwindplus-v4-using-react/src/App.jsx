@@ -5,10 +5,11 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 // Import tĩnh cho các trang quan trọng (tải ngay lập tức)
 import Home from "@/pages/Home";
 import About from "@/pages/About";
-import routes from "@/routes/autoRoutes";
+import routes from "@/core/routing/autoRoutes";
+import TailwindV4Layout from "@/layouts/TailwindV4Layout";
 
 // Import động cho trang Blog
-const DynamicPage = lazy(() => import("./pages/blog"));
+const DynamicPage = lazy(() => import("@/pages/blog"));
 
 // Component loading xoay tròn
 const LoadingFallback = () => (
@@ -31,7 +32,7 @@ function App() {
           Blog
         </Link>
         <Link
-          to="/marketing/page-sections/hero-sections"
+          to="/tailwindv4/marketing/page-sections/hero-sections"
           className="font-medium text-indigo-600 hover:underline"
         >
           Preview Hero
@@ -46,10 +47,15 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<DynamicPage />} />
 
-          {/* CÁC ROUTE TỰ ĐỘNG (QUÉT TỪ THƯ MỤC) */}
-          {routes.map(({ path, component: Component }) => (
-            <Route key={path} path={path} element={<Component />} />
-          ))}
+          {/* 1. Nhóm các trang Marketing */}
+          <Route element={<TailwindV4Layout />}>
+            {/* CÁC ROUTE TỰ ĐỘNG (QUÉT TỪ THƯ MỤC) */}
+            {routes
+              .filter((r) => r.path.startsWith("/tailwindv4"))
+              .map(({ path, component: Component }) => (
+                <Route key={path} path={path} element={<Component />} />
+              ))}
+          </Route>
 
           {/* TRANG 404 */}
           <Route
